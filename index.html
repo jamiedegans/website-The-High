@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The High Solan – Amsterdam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+
+<!-- ===================== HEADER ===================== -->
+<header class="site-header">
+  <div class="header-inner">
+
+    <a href="index.html" class="logo">
+      <img src="img/logo.png" alt="The High Solan" class="logo-img" />
+      <span class="logo-text">The High Solan</span>
+    </a>
+
+    <nav class="main-nav">
+      <a href="index.html"   class="nav-link active">Home</a>
+      <a href="menu.html"    class="nav-link">Menu</a>
+      <a href="about.html"   class="nav-link">About</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </nav>
+
+    <div class="header-actions">
+      <div class="search-bar">
+        <input
+          type="text"
+          placeholder="Search menu..."
+          onkeydown="if(event.key==='Enter') window.location='menu.html?q='+this.value"
+        />
+        <button class="search-btn"><i class="fa fa-search"></i></button>
+      </div>
+      <a href="cart.html" class="cart-btn">
+        <i class="fa fa-shopping-cart"></i>
+        <span class="cart-count" id="cart-badge">0</span>
+      </a>
+      <a href="login.html" class="btn btn-primary">
+        <i class="fa fa-user"></i> Login
+      </a>
+    </div>
+
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+      <i class="fa fa-bars"></i>
+    </button>
+
+  </div>
+  <nav class="mobile-nav" id="mobile-nav">
+    <a href="index.html"   class="nav-link">Home</a>
+    <a href="menu.html"    class="nav-link">Menu</a>
+    <a href="about.html"   class="nav-link">About</a>
+    <a href="contact.html" class="nav-link">Contact</a>
+    <a href="login.html"   class="nav-link">Login</a>
+    <a href="cart.html"    class="nav-link">Cart</a>
+  </nav>
+</header>
+
+
+<!-- ===================== MAIN ===================== -->
+<main class="site-main">
+
+
+  <!-- HERO -->
+  <section>
+    <div class="hero">
+
+      <div class="hero-content">
+        <p class="hero-label">Amsterdam · Op De Dijk</p>
+        <h1 class="hero-title">The High Solan</h1>
+        <p class="hero-slogan">"The High because this always the hype"</p>
+        <div class="hero-buttons">
+          <a href="menu.html"  class="btn btn-primary">View Menu</a>
+          <a href="cart.html"  class="btn btn-outline">Order Now</a>
+        </div>
+      </div>
+
+      <div class="hero-image">
+        <!-- Replace img/hero.jpg with your own photo -->
+        <img src="img/hero.jpg" alt="Signature dish from The High Solan" class="hero-img" />
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- FEATURED DISHES — 3 per row -->
+  <section class="section-block">
+    <div class="inner">
+      <div class="section-head">
+        <h2>Featured Dishes</h2>
+        <p>Handpicked favourites from our kitchen</p>
+      </div>
+      <!-- Cards rendered here by JavaScript -->
+      <div class="card-row centered" id="featured-grid"></div>
+      <div style="text-align:center; margin-top:2rem;">
+        <a href="menu.html" class="btn btn-outline">See Full Menu</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- INFO ROW — 3 blocks -->
+  <section class="section-block dark">
+    <div class="inner">
+      <div class="card-row centered">
+
+        <div class="info-card">
+          <i class="fa fa-map-marker-alt info-icon"></i>
+          <h3>Location</h3>
+          <p>Op De Dijk, Amsterdam</p>
+        </div>
+
+        <div class="info-card">
+          <i class="fa fa-clock info-icon"></i>
+          <h3>Hours</h3>
+          <p>Mon – Sun: 12:00 – 23:00</p>
+        </div>
+
+        <div class="info-card">
+          <i class="fa fa-phone info-icon"></i>
+          <h3>Reservations</h3>
+          <p>+31 20 000 0000</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+</main>
+
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="img/logo.png" alt="The High Solan" class="footer-logo" />
+      <p class="footer-tagline">"The High because this always the hype"</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigate</h4>
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Account</h4>
+      <a href="login.html">Login</a>
+      <a href="cart.html">My Cart</a>
+    </div>
+    <div class="footer-col">
+      <h4>Visit Us</h4>
+      <span>Op De Dijk, Amsterdam</span>
+      <span>+31 20 000 0000</span>
+      <span>info@thehighsolan.nl</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2024 The High Solan – Amsterdam. All rights reserved.</p>
+  </div>
+</footer>
+
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script src="script.js"></script>
+<script>
+
+  /* Render the 3 featured dishes on the homepage */
+  function renderFeatured() {
+    const featured   = menuItems.filter(function(item) { return item.featured; });
+    const grid       = document.getElementById('featured-grid');
+    grid.innerHTML   = '';
+
+    featured.slice(0, 3).forEach(function(item) {
+      grid.innerHTML += buildMenuCard(item);
+    });
+  }
+
+  /* Run when page loads */
+  renderFeatured();
+
+</script>
+
+</body>
+</html>
