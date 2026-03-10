@@ -18,52 +18,7 @@
 
 
     <!-- ===================== HEADER ===================== -->
-    <header class="site-header">
-        <div class="header-inner">
-
-            <a href="index.html" class="logo">
-                <img src="img/logo.png" alt="The High Solan" class="logo-img" />
-                <span class="logo-text">The High Solan</span>
-            </a>
-
-            <nav class="main-nav">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="menu.html" class="nav-link active">Menu</a>
-                <a href="about.html" class="nav-link">About</a>
-                <a href="contact.html" class="nav-link">Contact</a>
-            </nav>
-
-            <div class="header-actions">
-                <div class="search-bar">
-                    <input type="text" id="search-input" placeholder="Search menu..."
-                        oninput="handleSearch(this.value)" />
-                    <button class="search-btn"><i class="fa fa-search"></i></button>
-                </div>
-                <a href="cart.html" class="cart-btn">
-                    <i class="fa fa-shopping-cart"></i>
-                    <span class="cart-count" id="cart-badge">0</span>
-                </a>
-                <a href="login.html" class="btn btn-primary">
-                    <i class="fa fa-user"></i> Login
-                </a>
-            </div>
-
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                <i class="fa fa-bars"></i>
-            </button>
-
-        </div>
-        <nav class="mobile-nav" id="mobile-nav">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="menu.html" class="nav-link">Menu</a>
-            <a href="about.html" class="nav-link">About</a>
-            <a href="contact.html" class="nav-link">Contact</a>
-            <a href="login.html" class="nav-link">Login</a>
-            <a href="cart.html" class="nav-link">Cart</a>
-        </nav>
-    </header>
-
-
+<header><restaurant-header></restaurant-header></header>
     <!-- ===================== MAIN ===================== -->
     <main class="site-main">
 

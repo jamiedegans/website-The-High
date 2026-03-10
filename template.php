@@ -26,65 +26,7 @@
     <!-- ============================================================
      HEADER — copy this to every page, change active nav link
 ============================================================ -->
-    <header class="site-header">
-        <div class="header-inner">
-
-            <!-- Logo — replace placeholder-logo.png with your file -->
-            <a href="index.html" class="logo">
-                <img src="img/logo.png" alt="The High Solan Logo" class="logo-img" />
-                <span class="logo-text">The High Solan</span>
-            </a>
-
-            <!-- Desktop navigation — add class="active" to the current page link -->
-            <nav class="main-nav">
-                <a href="index.html" class="nav-link active">Home</a>
-                <a href="menu.html" class="nav-link">Menu</a>
-                <a href="about.html" class="nav-link">About</a>
-                <a href="contact.html" class="nav-link">Contact</a>
-            </nav>
-
-            <!-- Right side: search + cart + login -->
-            <div class="header-actions">
-
-                <!-- Search bar -->
-                <div class="search-bar">
-                    <input type="text" placeholder="Search menu..."
-                        onkeydown="if(event.key==='Enter') window.location='menu.html?q='+this.value" />
-                    <button class="search-btn" aria-label="Search">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </div>
-
-                <!-- Cart link -->
-                <a href="cart.html" class="cart-btn" aria-label="View cart">
-                    <i class="fa fa-shopping-cart"></i>
-                    <span class="cart-count" id="cart-badge">0</span>
-                </a>
-
-                <!-- Login / account button -->
-                <a href="login.html" class="btn btn-primary" id="login-btn">
-                    <i class="fa fa-user"></i> Login
-                </a>
-
-            </div>
-
-            <!-- Mobile hamburger -->
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu">
-                <i class="fa fa-bars"></i>
-            </button>
-
-        </div>
-
-        <!-- Mobile navigation dropdown -->
-        <nav class="mobile-nav" id="mobile-nav">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="menu.html" class="nav-link">Menu</a>
-            <a href="about.html" class="nav-link">About</a>
-            <a href="contact.html" class="nav-link">Contact</a>
-            <a href="login.html" class="nav-link">Login</a>
-            <a href="cart.html" class="nav-link">Cart</a>
-        </nav>
-    </header>
+<header><restaurant-header></restaurant-header></header>
     <!-- end HEADER -->
 
 
