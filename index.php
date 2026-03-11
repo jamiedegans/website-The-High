@@ -24,6 +24,17 @@ try {
   //stop (die)
   die("sorry, database probleem"); 
 }
+ $sql = "SELECT * FROM studenten WHERE leeftijd > 16";
+ 
+ $statement = $pdo->prepare($sql);
+
+ $statement->execute();
+
+ $studenten = $statement->fetchAll();  
+
+ echo "<pre>";
+ print_r($studenten);
+  echo "</pre>";
 ?>
 
 <!DOCTYPE html>
@@ -84,7 +95,7 @@ try {
         <!-- Cards rendered here by JavaScript -->
         <div class="card-row centered" id="featured-grid"></div>
         <div style="text-align:center; margin-top:2rem;">
-          <a href="menu." class="btn btn-outline">See Full Menu</a>
+          <a href="menu.php" class="btn btn-outline">See Full Menu</a>
         </div>
       </div>
     </section>

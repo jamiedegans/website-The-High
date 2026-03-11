@@ -108,9 +108,9 @@
 
                 /* Redirect based on role */
                 switch (role) {
-                    case 'owner': window.location.href = 'admin.html'; break;
-                    case 'employee': window.location.href = 'menu.html'; break;
-                    default: window.location.href = 'index.html';
+                    case 'owner': window.location.href = 'admin.php'; break;
+                    case 'employee': window.location.href = 'menu.php'; break;
+                    default: window.location.href = 'index.php';
                 }
 
             } else {
@@ -123,7 +123,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const user = getUser();
             if (user) {
-                window.location.href = user.role === 'owner' ? 'admin.html' : 'index.html';
+                window.location.href = user.role === 'owner' ? 'admin.php' : 'index.php';
             }
         });
 

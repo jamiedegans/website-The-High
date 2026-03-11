@@ -21,7 +21,7 @@ const menuItems = [
         ingredients: ["wagyu beef", "black truffle", "aged cheddar", "brioche bun", "caramelised onion", "lettuce", "truffle mayo"],
         allergens: ["gluten", "dairy", "eggs"],
         featured: true,
-        image: "img/dish-1.jpg"
+        image: "img/*dish-1.jpg"
     },
     {
         id: 2,
