@@ -15,8 +15,6 @@
 </head>
 
 <body>
-
-
     <!-- ===================== HEADER ===================== -->
 <header><restaurant-header></restaurant-header></header>
     <!-- ===================== MAIN ===================== -->

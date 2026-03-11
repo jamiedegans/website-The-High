@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Leeropgaven – Studenten Database</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --accent: #00d4aa;
+    --accent2: #7c6af7;
+    --accent3: #f78c6c;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --success: #3fb950;
+    --error: #f85149;
+    --warning: #d29922;
+    --code-bg: #0d1117;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  header {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 0 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,212,170,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 20%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(124,106,247,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem 2rem;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(0,212,170,0.12);
+    border: 1px solid rgba(0,212,170,0.3);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 300;
+    max-width: 600px;
+  }
+
+  .progress-bar-wrap {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 1rem 2rem;
+  }
+
+  .progress-bar-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .progress-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .schema-section {
+    max-width: 900px;
+    margin: 2.5rem auto 0;
+    padding: 0 2rem;
+  }
+
+  .schema-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .schema-header {
+    background: var(--surface2);
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .schema-header .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-red { background: #f85149; }
+  .dot-yellow { background: #d29922; }
+  .dot-green { background: #3fb950; }
+  .schema-title { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--muted); margin-left: 0.3rem; }
+
+  .schema-body { padding: 1.25rem; }
+
+  .table-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent2);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .table-name::before { content: '📋'; }
+
+  .schema-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .field-pill {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+  }
+
+  .field-name { color: var(--text); }
+  .field-type { color: var(--muted); font-size: 0.65rem; display: block; margin-top: 0.1rem; }
+  .field-pk { color: var(--warning); font-size: 0.65rem; }
+
+  .example-data { overflow-x: auto; }
+
+  .example-data table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+  }
+
+  .example-data th {
+    background: var(--surface2);
+    color: var(--accent);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .example-data td {
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .example-data tr:last-child td { border-bottom: none; }
+  .example-data tr:hover td { background: rgba(255,255,255,0.02); color: var(--text); }
+
+  main {
+    max-width: 900px;
+    margin: 2.5rem auto 4rem;
+    padding: 0 2rem;
+  }
+
+  .level-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3rem 0 1.5rem;
+  }
+
+  .level-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .level-1 .level-badge { background: rgba(63,185,80,0.15); color: var(--success); border: 1px solid rgba(63,185,80,0.3); }
+  .level-2 .level-badge { background: rgba(210,153,34,0.15); color: var(--warning); border: 1px solid rgba(210,153,34,0.3); }
+  .level-3 .level-badge { background: rgba(247,140,108,0.15); color: var(--accent3); border: 1px solid rgba(247,140,108,0.3); }
+  .level-4 .level-badge { background: rgba(124,106,247,0.15); color: var(--accent2); border: 1px solid rgba(124,106,247,0.3); }
+  .level-5 .level-badge { background: rgba(248,81,73,0.15); color: var(--error); border: 1px solid rgba(248,81,73,0.3); }
+
+  .level-line { flex: 1; height: 1px; background: var(--border); }
+  .level-title { font-size: 0.95rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
+
+  .danger-notice {
+    background: rgba(248,81,73,0.07);
+    border: 1px solid rgba(248,81,73,0.22);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .danger-notice-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .danger-notice strong { color: var(--error); display: block; margin-bottom: 0.2rem; }
+  .danger-notice p { color: var(--muted); margin: 0; }
+  .danger-notice code {
+    background: rgba(255,255,255,0.07);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+
+  .opdracht {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .opdracht.correct { border-color: var(--success); }
+  .opdracht.wrong { border-color: var(--error); }
+
+  .opdracht-header {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .opdracht-num {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .opdracht.correct .opdracht-num { background: rgba(63,185,80,0.15); border-color: var(--success); color: var(--success); }
+  .opdracht.wrong .opdracht-num { background: rgba(248,81,73,0.15); border-color: var(--error); color: var(--error); }
+
+  .type-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    letter-spacing: 0.05em;
+  }
+
+  .tag-select { background: rgba(0,212,170,0.15); color: var(--accent); border: 1px solid rgba(0,212,170,0.3); }
+  .tag-update { background: rgba(210,153,34,0.15); color: var(--warning); border: 1px solid rgba(210,153,34,0.3); }
+  .tag-delete { background: rgba(248,81,73,0.15); color: var(--error); border: 1px solid rgba(248,81,73,0.3); }
+
+  .opdracht-info { flex: 1; }
+  .opdracht-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; }
+  .opdracht-desc { color: var(--muted); font-size: 0.875rem; font-weight: 300; }
+
+  .toggle-icon {
+    color: var(--muted);
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .opdracht.open .toggle-icon { transform: rotate(180deg); }
+
+  .opdracht-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+
+  .opdracht.open .opdracht-body { display: block; }
+
+  .hint-block {
+    background: rgba(124,106,247,0.07);
+    border: 1px solid rgba(124,106,247,0.2);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .hint-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent2);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .hint-block code, .controle-vraag code, .controle-uitleg code, .controle-optie code {
+    background: rgba(255,255,255,0.08);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--accent);
+  }
+
+  .sql-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  textarea.sql-input {
+    width: 100%;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    color: var(--text);
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+
+  textarea.sql-input:focus { border-color: var(--accent2); }
+
+  .btn-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Sora', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.55rem 1.2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-check { background: var(--accent); color: #0d1117; }
+  .btn-check:hover { background: #00f0c0; transform: translateY(-1px); }
+  .btn-hint { background: transparent; border: 1px solid var(--accent2); color: var(--accent2); }
+  .btn-hint:hover { background: rgba(124,106,247,0.1); }
+  .btn-show { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+  .btn-show:hover { border-color: var(--muted); color: var(--text); }
+
+  .hint-text {
+    display: none;
+    margin-top: 0.75rem;
+    font-size: 0.83rem;
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(124,106,247,0.06);
+    padding: 0.6rem 0.9rem;
+    border-radius: 6px;
+    border: 1px dashed rgba(124,106,247,0.25);
+  }
+
+  .feedback {
+    margin-top: 1.25rem;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.success { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); }
+  .feedback.error { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.3); }
+  .feedback.neutral { background: rgba(139,148,158,0.1); border: 1px solid var(--border); }
+  .feedback-title { font-weight: 600; margin-bottom: 0.3rem; }
+  .feedback.success .feedback-title { color: var(--success); }
+  .feedback.error .feedback-title { color: var(--error); }
+  .feedback.neutral .feedback-title { color: var(--muted); }
+
+  .solution-code {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #79c0ff;
+    white-space: pre-wrap;
+    word-break: break-word;
+    display: none;
+    margin-top: 1rem;
+    line-height: 1.8;
+  }
+
+  .solution-code.show { display: block; }
+  .kw { color: #ff7b72; font-weight: 600; }
+  .kw-clause { color: #ffa657; font-weight: 600; }
+  .kw-str { color: #a8ff78; }
+  .kw-val { color: #79c0ff; }
+  .kw-col { color: #e6edf3; }
+  .kw-tbl { color: #ffa657; }
+
+  .controle-block {
+    margin-top: 1.5rem;
+    background: rgba(0,212,170,0.04);
+    border: 1px solid rgba(0,212,170,0.18);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: none;
+  }
+
+  .controle-block.show { display: block; }
+
+  .controle-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .controle-vraag { font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; }
+
+  .controle-opties { display: grid; gap: 0.5rem; }
+
+  .controle-optie {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .controle-optie:hover { border-color: var(--accent); background: rgba(0,212,170,0.05); }
+  .controle-optie.correct-ans { border-color: var(--success); background: rgba(63,185,80,0.1); color: var(--success); }
+  .controle-optie.wrong-ans { border-color: var(--error); background: rgba(248,81,73,0.1); color: var(--error); }
+
+  .opt-letter {
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .controle-uitleg {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding: 0.75rem;
+    background: var(--code-bg);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display: none;
+    line-height: 1.6;
+  }
+
+  .controle-uitleg.show { display: block; }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  @media (max-width: 600px) {
+    .schema-grid { grid-template-columns: 1fr 1fr; }
+    .level-title { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="badge">ICT MBO · Leerjaar 1 · Database Fundamentals</div>
+    <h1>SQL <span>Leeropgaven</span><br>Studenten Database</h1>
+    <p class="subtitle">Leer stap voor stap SQL queries schrijven — van eenvoudige SELECT statements tot UPDATE en DELETE.</p>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-inner">
+      <span class="progress-label">Voortgang</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-count" id="progressCount">0 / 13 voltooid</span>
+    </div>
+  </div>
+</header>
+
+<section class="schema-section">
+  <div class="schema-box">
+    <div class="schema-header">
+      <div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div>
+      <span class="schema-title">studenten — tabelstructuur &amp; voorbeelddata</span>
+    </div>
+    <div class="schema-body">
+      <div class="table-name">studenten</div>
+      <div class="schema-grid">
+        <div class="field-pill"><span class="field-name">id <span class="field-pk">PK</span></span><span class="field-type">INT · AUTO_INCREMENT</span></div>
+        <div class="field-pill"><span class="field-name">voornaam</span><span class="field-type">VARCHAR(50)</span></div>
+        <div class="field-pill"><span class="field-name">achternaam</span><span class="field-type">VARCHAR(50)</span></div>
+        <div class="field-pill"><span class="field-name">leeftijd</span><span class="field-type">INT</span></div>
+        <div class="field-pill"><span class="field-name">woonplaats</span><span class="field-type">VARCHAR(100)</span></div>
+        <div class="field-pill"><span class="field-name">klas</span><span class="field-type">VARCHAR(5)</span></div>
+        <div class="field-pill"><span class="field-name">gender</span><span class="field-type">VARCHAR(30)</span></div>
+        <div class="field-pill"><span class="field-name">email</span><span class="field-type">VARCHAR(100)</span></div>
+      </div>
+      <div class="example-data">
+        <table>
+          <thead><tr><th>id</th><th>voornaam</th><th>achternaam</th><th>leeftijd</th><th>woonplaats</th><th>klas</th><th>gender</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Liam</td><td>de Vries</td><td>16</td><td>Amsterdam</td><td>1A</td><td>Man</td></tr>
+            <tr><td>2</td><td>Sofia</td><td>Jansen</td><td>15</td><td>Rotterdam</td><td>1A</td><td>Vrouw</td></tr>
+            <tr><td>3</td><td>Noah</td><td>van den Berg</td><td>17</td><td>Utrecht</td><td>1B</td><td>Man</td></tr>
+            <tr><td>4</td><td>Amara</td><td>Bakker</td><td>16</td><td>Den Haag</td><td>1B</td><td>Vrouw</td></div></tr>
+            <tr><td>5</td><td>Finn</td><td>Smit</td><td>15</td><td>Eindhoven</td><td>1C</td><td>Non-binair</td></tr>
+            <tr><td style="color:var(--muted)">…</td><td colspan="6" style="color:var(--muted)">100 rijen totaal</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main>
+
+  <!-- NIVEAU 1 -->
+  <div class="level-header level-1">
+    <span class="level-badge">Niveau 1</span>
+    <span class="level-title">SELECT — alles &amp; kolommen ophalen</span>
+    <div class="level-line"></div>
+  </div>
+
+  <!-- Opdracht 1 -->
+  <div class="opdracht" id="op1">
+    <div class="opdracht-header" onclick="toggle('op1')">
+      <div class="opdracht-num">01</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-select">SELECT</span>Alle studenten ophalen</div>
+        <div class="opdracht-desc">Haal alle gegevens op van alle studenten uit de tabel.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        Met <code>SELECT *</code> selecteer je alle kolommen. Met <code>FROM</code> geef je de tabelnaam op. Dit is de eenvoudigste SQL-query die bestaat.
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp1" placeholder="SELECT ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op1',1)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint1')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol1')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint1">SELECT * FROM tabel_naam;</div>
+      <div class="feedback" id="fb1"></div>
+      <pre class="solution-code" id="sol1"><span class="kw">SELECT</span> * <span class="kw-clause">FROM</span> <span class="kw-tbl">studenten</span>;</pre>
+      <div class="controle-block" id="ctrl1">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Wat betekent de <code>*</code> in een SELECT statement?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl1',this,false)"><span class="opt-letter">A</span> Selecteer alleen de eerste rij</div>
+          <div class="controle-optie" onclick="mc('ctrl1',this,true)"><span class="opt-letter">B</span> Selecteer alle kolommen van de tabel</div>
+          <div class="controle-optie" onclick="mc('ctrl1',this,false)"><span class="opt-letter">C</span> Tel het aantal rijen</div>
+          <div class="controle-optie" onclick="mc('ctrl1',this,false)"><span class="opt-letter">D</span> Verwijder alle gegevens</div>
+        </div>
+        <div class="controle-uitleg" id="uitleg1">✅ Correct! De <code>*</code> staat voor "alle kolommen". Je kunt ook specifieke kolomnamen schrijven, zoals: <code>SELECT voornaam, leeftijd FROM studenten;</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Opdracht 2 -->
+  <div class="opdracht" id="op2">
+    <div class="opdracht-header" onclick="toggle('op2')">
+      <div class="opdracht-num">02</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-select">SELECT</span>Specifieke kolommen ophalen</div>
+        <div class="opdracht-desc">Haal alleen de voornaam, achternaam en klas op van alle studenten.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        In plaats van <code>*</code> kun je specifieke kolomnamen opgeven, gescheiden door een komma. Je ziet dan alleen die kolommen in je resultaat.
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp2" placeholder="SELECT ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op2',2)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint2')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol2')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint2">SELECT kolom1, kolom2, kolom3 FROM tabel;</div>
+      <div class="feedback" id="fb2"></div>
+      <pre class="solution-code" id="sol2"><span class="kw">SELECT</span> <span class="kw-col">voornaam</span>, <span class="kw-col">achternaam</span>, <span class="kw-col">klas</span>
+<span class="kw-clause">FROM</span> <span class="kw-tbl">studenten</span>;</pre>
+      <div class="controle-block" id="ctrl2">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Je wilt alleen voornaam en leeftijd zien. Welke query is correct?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl2',this,false)"><span class="opt-letter">A</span> <code>SELECT * FROM studenten WHERE voornaam, leeftijd;</code></div>
+          <div class="controle-optie" onclick="mc('ctrl2',this,true)"><span class="opt-letter">B</span> <code>SELECT voornaam, leeftijd FROM studenten;</code></div>
+          <div class="controle-optie" onclick="mc('ctrl2',this,false)"><span class="opt-letter">C</span> <code>SELECT voornaam + leeftijd FROM studenten;</code></div>
+          <div class="controle-optie" onclick="mc('ctrl2',this,false)"><span class="opt-letter">D</span> <code>GET voornaam, leeftijd FROM studenten;</code></div>
+        </div>
+        <div class="controle-uitleg" id="uitleg2">✅ Goed! Kolomnamen worden gescheiden door komma's. <code>GET</code> bestaat niet in SQL — het juiste keyword is <code>SELECT</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Opdracht 3 -->
+  <div class="opdracht" id="op3">
+    <div class="opdracht-header" onclick="toggle('op3')">
+      <div class="opdracht-num">03</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-select">SELECT</span>Resultaat sorteren met ORDER BY</div>
+        <div class="opdracht-desc">Haal alle studenten op, gesorteerd op achternaam van A naar Z.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        <code>ORDER BY kolomnaam ASC</code> sorteert oplopend (A→Z of laag→hoog). <code>DESC</code> sorteert aflopend (Z→A). Zonder dit keyword is de volgorde willekeurig.
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp3" placeholder="SELECT ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op3',3)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint3')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol3')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint3">Voeg toe aan het einde: ORDER BY achternaam ASC</div>
+      <div class="feedback" id="fb3"></div>
+      <pre class="solution-code" id="sol3"><span class="kw">SELECT</span> *
+<span class="kw-clause">FROM</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">ORDER BY</span> <span class="kw-col">achternaam</span> ASC;</pre>
+      <div class="controle-block" id="ctrl3">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Wat is het verschil tussen <code>ASC</code> en <code>DESC</code> bij ORDER BY?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl3',this,false)"><span class="opt-letter">A</span> ASC sorteert op tekst, DESC op getallen</div>
+          <div class="controle-optie" onclick="mc('ctrl3',this,false)"><span class="opt-letter">B</span> Er is geen verschil</div>
+          <div class="controle-optie" onclick="mc('ctrl3',this,true)"><span class="opt-letter">C</span> ASC = oplopend (A→Z), DESC = aflopend (Z→A)</div>
+          <div class="controle-optie" onclick="mc('ctrl3',this,false)"><span class="opt-letter">D</span> ASC = aflopend, DESC = oplopend</div>
+        </div>
+        <div class="controle-uitleg" id="uitleg3">✅ Correct! ASC = <em>ascending</em> (oplopend) en DESC = <em>descending</em> (aflopend). Als je niets opgeeft, is ASC de standaard in MySQL.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NIVEAU 2 -->
+  <div class="level-header level-2">
+    <span class="level-badge">Niveau 2</span>
+    <span class="level-title">SELECT — Filteren met WHERE</span>
+    <div class="level-line"></div>
+  </div>
+
+  <!-- Opdracht 4 -->
+  <div class="opdracht" id="op4">
+    <div class="opdracht-header" onclick="toggle('op4')">
+      <div class="opdracht-num">04</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-select">SELECT</span>Filteren op tekst</div>
+        <div class="opdracht-desc">Haal alle studenten op die in klas 1A zitten.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        Met <code>WHERE</code> filter je rijen op een voorwaarde. Tekst moet je tussen <strong>aanhalingstekens</strong> zetten: <code>'1A'</code>. Getallen schrijf je zonder aanhalingstekens: <code>leeftijd = 16</code>.
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp4" placeholder="SELECT ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op4',4)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint4')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol4')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint4">WHERE klas = '1A'</div>
+      <div class="feedback" id="fb4"></div>
+      <pre class="solution-code" id="sol4"><span class="kw">SELECT</span> *
+<span class="kw-clause">FROM</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">WHERE</span> <span class="kw-col">klas</span> = <span class="kw-str">'1A'</span>;</pre>
+      <div class="controle-block" id="ctrl4">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Waarom staat <code>'1A'</code> tussen aanhalingstekens, maar een getal zoals <code>16</code> niet?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl4',this,false)"><span class="opt-letter">A</span> Aanhalingstekens zijn altijd optioneel</div>
+          <div class="controle-optie" onclick="mc('ctrl4',this,true)"><span class="opt-letter">B</span> Tekst (strings) krijgen aanhalingstekens, getallen niet</div>
+          <div class="controle-optie" onclick="mc('ctrl4',this,false)"><span class="opt-letter">C</span> Omdat '1A' met een letter eindigt</div>
+          <div class="controle-optie" onclick="mc('ctrl4',this,false)"><span class="opt-letter">D</span> Kolomnamen krijgen altijd aanhalingstekens</div>
+        </div>
+        <div class="controle-uitleg" id="uitleg4">✅ Juist! Tekst-waarden (strings) zet je altijd tussen aanhalingstekens. Getallen schrijf je direct: <code>WHERE leeftijd = 16</code>. Schrijf je toch <code>'16'</code>, dan werkt het in MySQL toevallig ook — maar het is niet de correcte schrijfwijze.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Opdracht 5 -->
+  <div class="opdracht" id="op5">
+    <div class="opdracht-header" onclick="toggle('op5')">
+      <div class="opdracht-num">05</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-select">SELECT</span>Filteren met vergelijkingsoperatoren</div>
+        <div class="opdracht-desc">Haal alle studenten op die 16 jaar of ouder zijn, gesorteerd op leeftijd van laag naar hoog.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        Vergelijkingsoperatoren: <code>=</code> (gelijk), <code>&gt;</code> (groter), <code>&gt;=</code> (groter of gelijk), <code>&lt;</code> (kleiner), <code>&lt;=</code> (kleiner of gelijk), <code>!=</code> of <code>&lt;&gt;</code> (niet gelijk).
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp5" placeholder="SELECT ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op5',5)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint5')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol5')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint5">WHERE leeftijd >= 16   daarna ORDER BY leeftijd ASC</div>
+      <div class="feedback" id="fb5"></div>
+      <pre class="solution-code" id="sol5"><span class="kw">SELECT</span> *
+<span class="kw-clause">FROM</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">WHERE</span> <span class="kw-col">leeftijd</span> >= <span class="kw-val">16</span>
+<span class="kw-clause">ORDER BY</span> <span class="kw-col">leeftijd</span> ASC;</pre>
+      <div class="controle-block" id="ctrl5">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Welke operator gebruik je om studenten te selecteren die NIET 15 jaar oud zijn?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl5',this,false)"><span class="opt-letter">A</span> <code>leeftijd == 15</code></div>
+          <div class="controle-optie" onclick="mc('ctrl5',this,true)"><span class="opt-letter">B</span> <code>leeftijd != 15</code> of <code>leeftijd &lt;&gt; 15</code></div>
+          <div class="controle-optie" onclick="mc('ctrl5',this,false)"><span class="opt-letter">C</span> <code>NOT leeftijd 15</code></div>
+          <div class="controle-optie" onclick="mc('ctrl5',this,false)"><span class="opt-letter">D</span> <code>leeftijd =! 15</code></div>
+        </div>
+        <div class="controle-uitleg" id="uitleg5">✅ Juist! Zowel <code>!=</code> als <code>&lt;&gt;</code> betekenen "niet gelijk aan". In SQL gebruik je één <code>=</code> voor gelijkheid — <code>==</code> bestaat niet in SQL.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Opdracht 6 -->
+  <div class="opdracht" id="op6">
+    <div class="opdracht-header" onclick="toggle('op6')">
+      <div class="opdracht-num">06</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-select">SELECT</span>Combineren met AND &amp; OR</div>
+        <div class="opdracht-desc">Haal alle studenten op die in klas 1B zitten én 16 jaar oud zijn.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        <code>AND</code> = beide voorwaarden moeten waar zijn. <code>OR</code> = minstens één voorwaarde moet waar zijn. Combineer ze met haakjes om de volgorde duidelijk te maken: <code>(klas = '1A' OR klas = '1B') AND leeftijd = 16</code>.
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp6" placeholder="SELECT ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op6',6)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint6')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol6')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint6">WHERE klas = '1B' AND leeftijd = 16</div>
+      <div class="feedback" id="fb6"></div>
+      <pre class="solution-code" id="sol6"><span class="kw">SELECT</span> *
+<span class="kw-clause">FROM</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">WHERE</span> <span class="kw-col">klas</span> = <span class="kw-str">'1B'</span> AND <span class="kw-col">leeftijd</span> = <span class="kw-val">16</span>;</pre>
+      <div class="controle-block" id="ctrl6">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Je wilt studenten uit klas 1A óf klas 1C ophalen. Welke query werkt correct?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl6',this,false)"><span class="opt-letter">A</span> <code>WHERE klas = '1A' AND klas = '1C'</code></div>
+          <div class="controle-optie" onclick="mc('ctrl6',this,true)"><span class="opt-letter">B</span> <code>WHERE klas = '1A' OR klas = '1C'</code></div>
+          <div class="controle-optie" onclick="mc('ctrl6',this,false)"><span class="opt-letter">C</span> <code>WHERE klas = '1A', '1C'</code></div>
+          <div class="controle-optie" onclick="mc('ctrl6',this,false)"><span class="opt-letter">D</span> <code>WHERE klas = '1A' PLUS klas = '1C'</code></div>
+        </div>
+        <div class="controle-uitleg" id="uitleg6">✅ Correct! Een student kan niet tegelijk in 1A én 1C zitten, dus AND geeft 0 resultaten. Met OR is één van de twee voldoende. <code>PLUS</code> bestaat niet in SQL.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NIVEAU 3 -->
+  <div class="level-header level-3">
+    <span class="level-badge">Niveau 3</span>
+    <span class="level-title">SELECT — BETWEEN, IN &amp; LIMIT</span>
+    <div class="level-line"></div>
+  </div>
+
+  <!-- Opdracht 7 -->
+  <div class="opdracht" id="op7">
+    <div class="opdracht-header" onclick="toggle('op7')">
+      <div class="opdracht-num">07</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-select">SELECT</span>Bereik filteren met BETWEEN</div>
+        <div class="opdracht-desc">Haal alle studenten op die 15 of 16 jaar oud zijn. Gebruik BETWEEN.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        <code>BETWEEN x AND y</code> selecteert alle waarden <em>inclusief</em> de grenzen. Het is een kortere schrijfwijze voor <code>leeftijd &gt;= 15 AND leeftijd &lt;= 16</code>. Werkt ook op tekst en datums.
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp7" placeholder="SELECT ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op7',7)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint7')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol7')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint7">WHERE leeftijd BETWEEN 15 AND 16</div>
+      <div class="feedback" id="fb7"></div>
+      <pre class="solution-code" id="sol7"><span class="kw">SELECT</span> *
+<span class="kw-clause">FROM</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">WHERE</span> <span class="kw-col">leeftijd</span> BETWEEN <span class="kw-val">15</span> AND <span class="kw-val">16</span>;</pre>
+      <div class="controle-block" id="ctrl7">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Is <code>BETWEEN 15 AND 16</code> hetzelfde als <code>leeftijd &gt;= 15 AND leeftijd &lt;= 16</code>?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl7',this,true)"><span class="opt-letter">A</span> Ja, BETWEEN is inclusief de grenzen (15 en 16 doen mee)</div>
+          <div class="controle-optie" onclick="mc('ctrl7',this,false)"><span class="opt-letter">B</span> Nee, BETWEEN sluit de grenzen uit</div>
+          <div class="controle-optie" onclick="mc('ctrl7',this,false)"><span class="opt-letter">C</span> Alleen bij getallen zijn ze hetzelfde</div>
+          <div class="controle-optie" onclick="mc('ctrl7',this,false)"><span class="opt-letter">D</span> BETWEEN werkt alleen met datums</div>
+        </div>
+        <div class="controle-uitleg" id="uitleg7">✅ Juist! BETWEEN is altijd inclusief in MySQL. <code>BETWEEN 15 AND 16</code> geeft precies hetzelfde resultaat als <code>&gt;= 15 AND &lt;= 16</code>. Handig om te weten: BETWEEN werkt ook op tekst (alfabetisch) en datum-kolommen.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Opdracht 8 -->
+  <div class="opdracht" id="op8">
+    <div class="opdracht-header" onclick="toggle('op8')">
+      <div class="opdracht-num">08</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-select">SELECT</span>Lijst filteren met IN</div>
+        <div class="opdracht-desc">Haal alle studenten op die in Amsterdam, Rotterdam of Utrecht wonen. Gebruik IN.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        <code>IN (waarde1, waarde2, ...)</code> is een compacte schrijfwijze voor meerdere OR-voorwaarden op dezelfde kolom. In plaats van drie losse OR-regels schrijf je één overzichtelijke lijst.
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp8" placeholder="SELECT ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op8',8)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint8')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol8')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint8">WHERE woonplaats IN ('Amsterdam', 'Rotterdam', 'Utrecht')</div>
+      <div class="feedback" id="fb8"></div>
+      <pre class="solution-code" id="sol8"><span class="kw">SELECT</span> *
+<span class="kw-clause">FROM</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">WHERE</span> <span class="kw-col">woonplaats</span> IN (<span class="kw-str">'Amsterdam'</span>, <span class="kw-str">'Rotterdam'</span>, <span class="kw-str">'Utrecht'</span>)
+<span class="kw-clause">ORDER BY</span> <span class="kw-col">woonplaats</span> ASC;</pre>
+      <div class="controle-block" id="ctrl8">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Welke query is gelijkwaardig aan <code>WHERE klas IN ('1A', '1B')</code>?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl8',this,false)"><span class="opt-letter">A</span> <code>WHERE klas = '1A' AND klas = '1B'</code></div>
+          <div class="controle-optie" onclick="mc('ctrl8',this,true)"><span class="opt-letter">B</span> <code>WHERE klas = '1A' OR klas = '1B'</code></div>
+          <div class="controle-optie" onclick="mc('ctrl8',this,false)"><span class="opt-letter">C</span> <code>WHERE klas BETWEEN '1A' AND '1B'</code></div>
+          <div class="controle-optie" onclick="mc('ctrl8',this,false)"><span class="opt-letter">D</span> <code>WHERE klas = ('1A', '1B')</code></div>
+        </div>
+        <div class="controle-uitleg" id="uitleg8">✅ Helemaal goed! <code>IN</code> is een nettere schrijfwijze voor meerdere OR-condities op dezelfde kolom. Hoe langer de lijst, hoe meer voordeel <code>IN</code> heeft.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Opdracht 9 -->
+  <div class="opdracht" id="op9">
+    <div class="opdracht-header" onclick="toggle('op9')">
+      <div class="opdracht-num">09</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-select">SELECT</span>Resultaten beperken met LIMIT</div>
+        <div class="opdracht-desc">Haal de eerste 10 studenten op, gesorteerd op id van laag naar hoog.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        <code>LIMIT n</code> beperkt het aantal teruggegeven rijen. Handig bij grote tabellen. Met <code>LIMIT n OFFSET m</code> sla je de eerste m rijen over — dit gebruik je voor paginering (pagina 1, 2, 3…).
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp9" placeholder="SELECT ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op9',9)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint9')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol9')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint9">ORDER BY id ASC  daarna: LIMIT 10</div>
+      <div class="feedback" id="fb9"></div>
+      <pre class="solution-code" id="sol9"><span class="kw">SELECT</span> *
+<span class="kw-clause">FROM</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">ORDER BY</span> <span class="kw-col">id</span> ASC
+LIMIT <span class="kw-val">10</span>;</pre>
+      <div class="controle-block" id="ctrl9">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Wat geeft <code>LIMIT 10 OFFSET 20</code> terug?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl9',this,false)"><span class="opt-letter">A</span> De eerste 20 rijen</div>
+          <div class="controle-optie" onclick="mc('ctrl9',this,false)"><span class="opt-letter">B</span> Rijen 10 tot en met 20</div>
+          <div class="controle-optie" onclick="mc('ctrl9',this,true)"><span class="opt-letter">C</span> 10 rijen, beginnend ná de 20ste rij (rijen 21 t/m 30)</div>
+          <div class="controle-optie" onclick="mc('ctrl9',this,false)"><span class="opt-letter">D</span> De laatste 10 rijen van de tabel</div>
+        </div>
+        <div class="controle-uitleg" id="uitleg9">✅ Precies! <code>OFFSET</code> slaat een aantal rijen over. Pagina 1 = <code>LIMIT 10 OFFSET 0</code>, pagina 2 = <code>LIMIT 10 OFFSET 10</code>, enz. Dit is het standaard paginerings-patroon.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NIVEAU 4 — UPDATE -->
+  <div class="level-header level-4">
+    <span class="level-badge">Niveau 4</span>
+    <span class="level-title">UPDATE — Gegevens aanpassen</span>
+    <div class="level-line"></div>
+  </div>
+
+  <div class="danger-notice">
+    <div class="danger-notice-icon">⚠️</div>
+    <div>
+      <strong>Let op bij UPDATE!</strong>
+      <p>Vergeet je de <code>WHERE</code> clausule, dan worden <em>alle</em> rijen in de tabel gewijzigd. Controleer altijd eerst met een <code>SELECT</code> welke rijen je gaat aanpassen.</p>
+    </div>
+  </div>
+
+  <!-- Opdracht 10 -->
+  <div class="opdracht" id="op10">
+    <div class="opdracht-header" onclick="toggle('op10')">
+      <div class="opdracht-num">10</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-update">UPDATE</span>Eén waarde aanpassen</div>
+        <div class="opdracht-desc">Student met id 3 is verhuisd naar Groningen. Pas de woonplaats aan.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        Structuur: <code>UPDATE tabel SET kolom = waarde WHERE voorwaarde;</code>. De <code>WHERE</code> zorgt dat je alleen de bedoelde rij aanpast. Gebruik altijd de <code>id</code> (primaire sleutel) als je één specifieke rij wilt aanpassen.
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp10" placeholder="UPDATE ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op10',10)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint10')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol10')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint10">UPDATE studenten SET woonplaats = 'Groningen' WHERE id = 3;</div>
+      <div class="feedback" id="fb10"></div>
+      <pre class="solution-code" id="sol10"><span class="kw">UPDATE</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">SET</span> <span class="kw-col">woonplaats</span> = <span class="kw-str">'Groningen'</span>
+<span class="kw-clause">WHERE</span> <span class="kw-col">id</span> = <span class="kw-val">3</span>;</pre>
+      <div class="controle-block" id="ctrl10">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Wat gebeurt er als je <code>UPDATE studenten SET woonplaats = 'Groningen'</code> uitvoert <em>zonder</em> WHERE?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl10',this,false)"><span class="opt-letter">A</span> Er gebeurt niets, SQL vraagt om bevestiging</div>
+          <div class="controle-optie" onclick="mc('ctrl10',this,false)"><span class="opt-letter">B</span> Alleen de eerste rij wordt aangepast</div>
+          <div class="controle-optie" onclick="mc('ctrl10',this,true)"><span class="opt-letter">C</span> Alle 100 studenten krijgen woonplaats 'Groningen'</div>
+          <div class="controle-optie" onclick="mc('ctrl10',this,false)"><span class="opt-letter">D</span> SQL geeft een foutmelding want WHERE is verplicht</div>
+        </div>
+        <div class="controle-uitleg" id="uitleg10">✅ Correct! Zonder WHERE past UPDATE elke rij aan — een veelgemaakte fout. Tip: voer altijd eerst <code>SELECT * FROM studenten WHERE id = 3;</code> uit om te controleren welke rij je gaat wijzigen.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Opdracht 11 -->
+  <div class="opdracht" id="op11">
+    <div class="opdracht-header" onclick="toggle('op11')">
+      <div class="opdracht-num">11</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-update">UPDATE</span>Meerdere kolommen tegelijk aanpassen</div>
+        <div class="opdracht-desc">Student met id 7 heeft verjaardag gehad (leeftijd wordt 18) en is overgezet naar klas 1C. Pas beide velden in één query aan.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        Je kunt meerdere kolommen tegelijk aanpassen door ze na <code>SET</code> met komma's te scheiden: <code>SET kolom1 = waarde1, kolom2 = waarde2</code>. Efficiënter dan twee losse UPDATE-queries.
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp11" placeholder="UPDATE ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op11',11)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint11')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol11')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint11">UPDATE studenten SET leeftijd = 18, klas = '1C' WHERE id = 7;</div>
+      <div class="feedback" id="fb11"></div>
+      <pre class="solution-code" id="sol11"><span class="kw">UPDATE</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">SET</span> <span class="kw-col">leeftijd</span> = <span class="kw-val">18</span>, <span class="kw-col">klas</span> = <span class="kw-str">'1C'</span>
+<span class="kw-clause">WHERE</span> <span class="kw-col">id</span> = <span class="kw-val">7</span>;</pre>
+      <div class="controle-block" id="ctrl11">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Alle studenten in klas 1A worden verplaatst naar 1B. Welke query is correct?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl11',this,false)"><span class="opt-letter">A</span> <code>UPDATE studenten SET klas WHERE klas = '1A' = '1B';</code></div>
+          <div class="controle-optie" onclick="mc('ctrl11',this,false)"><span class="opt-letter">B</span> <code>UPDATE studenten WHERE klas = '1A' SET klas = '1B';</code></div>
+          <div class="controle-optie" onclick="mc('ctrl11',this,true)"><span class="opt-letter">C</span> <code>UPDATE studenten SET klas = '1B' WHERE klas = '1A';</code></div>
+          <div class="controle-optie" onclick="mc('ctrl11',this,false)"><span class="opt-letter">D</span> <code>CHANGE studenten SET klas = '1B' WHERE klas = '1A';</code></div>
+        </div>
+        <div class="controle-uitleg" id="uitleg11">✅ Correct! De volgorde is altijd: <code>UPDATE tabel SET kolom = waarde WHERE voorwaarde</code>. Hiermee worden alle rijen aangepast waar klas gelijk is aan '1A'. <code>CHANGE</code> bestaat niet in SQL.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NIVEAU 5 — DELETE -->
+  <div class="level-header level-5">
+    <span class="level-badge">Niveau 5</span>
+    <span class="level-title">DELETE — Gegevens verwijderen</span>
+    <div class="level-line"></div>
+  </div>
+
+  <div class="danger-notice">
+    <div class="danger-notice-icon">🚨</div>
+    <div>
+      <strong>Pas op: DELETE is onomkeerbaar!</strong>
+      <p>Verwijderde rijen zijn permanent weg — er is geen prullenbak in SQL. Gebruik altijd <code>WHERE</code> en voer van tevoren een <code>SELECT</code> uit met dezelfde WHERE om te controleren wat er verwijderd gaat worden.</p>
+    </div>
+  </div>
+
+  <!-- Opdracht 12 -->
+  <div class="opdracht" id="op12">
+    <div class="opdracht-header" onclick="toggle('op12')">
+      <div class="opdracht-num">12</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-delete">DELETE</span>Eén rij verwijderen</div>
+        <div class="opdracht-desc">Student met id 5 heeft zich uitgeschreven. Verwijder deze student uit de database.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        Structuur: <code>DELETE FROM tabel WHERE voorwaarde;</code>. Je schrijft geen kolomnamen — DELETE verwijdert altijd <em>hele rijen</em>. Gebruik de primaire sleutel (<code>id</code>) om precies één rij te verwijderen.
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp12" placeholder="DELETE ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op12',12)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint12')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol12')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint12">DELETE FROM studenten WHERE id = 5;</div>
+      <div class="feedback" id="fb12"></div>
+      <pre class="solution-code" id="sol12"><span class="kw">DELETE FROM</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">WHERE</span> <span class="kw-col">id</span> = <span class="kw-val">5</span>;</pre>
+      <div class="controle-block" id="ctrl12">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Wat doet <code>DELETE FROM studenten;</code> (zonder WHERE)?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl12',this,false)"><span class="opt-letter">A</span> De tabel zelf wordt verwijderd</div>
+          <div class="controle-optie" onclick="mc('ctrl12',this,false)"><span class="opt-letter">B</span> Alleen de eerste rij wordt verwijderd</div>
+          <div class="controle-optie" onclick="mc('ctrl12',this,true)"><span class="opt-letter">C</span> Alle 100 rijen worden verwijderd; de lege tabel blijft bestaan</div>
+          <div class="controle-optie" onclick="mc('ctrl12',this,false)"><span class="opt-letter">D</span> SQL geeft een foutmelding want WHERE is verplicht</div>
+        </div>
+        <div class="controle-uitleg" id="uitleg12">✅ Correct! Zonder WHERE verwijdert DELETE alle rijen, maar de tabelstructuur blijft intact. Wil je ook de tabel zelf verwijderen? Dan gebruik je <code>DROP TABLE studenten;</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Opdracht 13 -->
+  <div class="opdracht" id="op13">
+    <div class="opdracht-header" onclick="toggle('op13')">
+      <div class="opdracht-num">13</div>
+      <div class="opdracht-info">
+        <div class="opdracht-title"><span class="type-tag tag-delete">DELETE</span>Meerdere rijen verwijderen</div>
+        <div class="opdracht-desc">Klas 1C wordt opgeheven. Verwijder alle studenten die in klas 1C zitten.</div>
+      </div>
+      <div class="toggle-icon">▼</div>
+    </div>
+    <div class="opdracht-body">
+      <div class="hint-block"><span class="hint-label">📌 Uitleg</span>
+        DELETE verwijdert <em>alle</em> rijen die aan de WHERE-voorwaarde voldoen. Je kunt dezelfde filter-technieken gebruiken als bij SELECT: <code>=</code>, <code>IN</code>, <code>AND</code>, enz. Controleer van tevoren met: <code>SELECT * FROM studenten WHERE klas = '1C';</code>
+      </div>
+      <label class="sql-label">Schrijf jouw SQL query:</label>
+      <textarea class="sql-input" id="inp13" placeholder="DELETE ..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="check('op13',13)">✓ Controleer</button>
+        <button class="btn btn-hint" onclick="showHint('hint13')">💡 Toon hint</button>
+        <button class="btn btn-show" onclick="showSol('sol13')">👁 Toon antwoord</button>
+      </div>
+      <div class="hint-text" id="hint13">DELETE FROM studenten WHERE klas = '1C';</div>
+      <div class="feedback" id="fb13"></div>
+      <pre class="solution-code" id="sol13"><span class="kw">DELETE FROM</span> <span class="kw-tbl">studenten</span>
+<span class="kw-clause">WHERE</span> <span class="kw-col">klas</span> = <span class="kw-str">'1C'</span>;</pre>
+      <div class="controle-block" id="ctrl13">
+        <div class="controle-title">🔍 Controllevraag</div>
+        <div class="controle-vraag">Wat is de beste werkwijze vóór het uitvoeren van een DELETE met WHERE?</div>
+        <div class="controle-opties">
+          <div class="controle-optie" onclick="mc('ctrl13',this,false)"><span class="opt-letter">A</span> Gewoon uitvoeren, DELETE vraagt automatisch om bevestiging</div>
+          <div class="controle-optie" onclick="mc('ctrl13',this,true)"><span class="opt-letter">B</span> Eerst een SELECT met dezelfde WHERE uitvoeren om te zien welke rijen verwijderd worden</div>
+          <div class="controle-optie" onclick="mc('ctrl13',this,false)"><span class="opt-letter">C</span> Niets, DELETE is altijd veilig met WHERE</div>
+          <div class="controle-optie" onclick="mc('ctrl13',this,false)"><span class="opt-letter">D</span> De tabel vergrendelen met LOCK TABLE eerst</div>
+        </div>
+        <div class="controle-uitleg" id="uitleg13">✅ Uitstekend! Voer altijd eerst <code>SELECT * FROM studenten WHERE klas = '1C';</code> uit. Zo zie je precies hoeveel en welke rijen worden verwijderd — en kun je een onbedoelde fout voorkomen. Bij productiedatabases maak je ook altijd een backup.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>school.studenten · SQL Leeropgaven · ICT MBO Leerjaar 1</footer>
+
+<script>
+  const TOTAL = 13;
+  const done = new Set();
+
+  function nrm(q) {
+    return q.toLowerCase().replace(/\s+/g,' ').replace(/;\s*$/,'').trim();
+  }
+
+  function toggle(id) { document.getElementById(id).classList.toggle('open'); }
+  function showHint(id) { const e = document.getElementById(id); e.style.display = e.style.display === 'block' ? 'none' : 'block'; }
+  function showSol(id) { document.getElementById(id).classList.toggle('show'); }
+
+  function isCorrect(n, q) {
+    const rules = {
+      1:  q.includes('select') && q.includes('*') && q.includes('from') && q.includes('studenten'),
+      2:  q.includes('select') && q.includes('voornaam') && q.includes('achternaam') && q.includes('klas') && q.includes('from studenten'),
+      3:  q.includes('select') && q.includes('from studenten') && q.includes('order by') && q.includes('achternaam'),
+      4:  q.includes('from studenten') && q.includes('where') && q.includes('klas') && (q.includes("'1a'") || q.includes('"1a"')),
+      5:  q.includes('from studenten') && q.includes('where') && q.includes('leeftijd') && q.includes('>=') && q.includes('16') && q.includes('order by'),
+      6:  q.includes('from studenten') && q.includes('where') && (q.includes("'1b'") || q.includes('"1b"')) && q.includes('and') && q.includes('leeftijd') && q.includes('16'),
+      7:  q.includes('from studenten') && q.includes('where') && q.includes('leeftijd') && q.includes('between') && q.includes('15') && q.includes('16'),
+      8:  q.includes('from studenten') && q.includes('where') && q.includes('woonplaats') && q.includes('in') && q.includes('amsterdam') && q.includes('rotterdam') && q.includes('utrecht'),
+      9:  q.includes('from studenten') && q.includes('limit') && q.includes('10'),
+      10: q.includes('update studenten') && q.includes('set') && q.includes('woonplaats') && q.includes('groningen') && q.includes('where') && q.includes('id') && q.includes('3'),
+      11: q.includes('update studenten') && q.includes('set') && q.includes('leeftijd') && q.includes('18') && q.includes('klas') && (q.includes("'1c'") || q.includes('"1c"')) && q.includes('where') && q.includes('id') && q.includes('7'),
+      12: q.includes('delete') && q.includes('from studenten') && q.includes('where') && q.includes('id') && q.includes('5'),
+      13: q.includes('delete') && q.includes('from studenten') && q.includes('where') && q.includes('klas') && (q.includes("'1c'") || q.includes('"1c"')),
+    };
+    return !!rules[n];
+  }
+
+  function check(opId, num) {
+    const val = document.getElementById('inp' + num).value;
+    const fb = document.getElementById('fb' + num);
+    const ctrl = document.getElementById('ctrl' + num);
+    const op = document.getElementById(opId);
+
+    if (!val.trim()) {
+      fb.className = 'feedback show neutral';
+      fb.innerHTML = '<div class="feedback-title">⚠️ Lege query</div>Schrijf eerst een SQL query in het tekstveld.';
+      return;
+    }
+
+    if (isCorrect(num, nrm(val))) {
+      fb.className = 'feedback show success';
+      fb.innerHTML = '<div class="feedback-title">✅ Correct!</div>Goed gedaan! Beantwoord nu de controllevraag hieronder.';
+      op.classList.add('correct'); op.classList.remove('wrong');
+      ctrl.classList.add('show');
+      done.add(num);
+    } else {
+      fb.className = 'feedback show error';
+      fb.innerHTML = '<div class="feedback-title">❌ Niet helemaal goed</div>Controleer op spellingsfouten, aanhalingstekens en de juiste keywords. Gebruik de hint als je vastloopt.';
+      op.classList.add('wrong'); op.classList.remove('correct');
+    }
+    updateBar();
+  }
+
+  function mc(ctrlId, el, correct) {
+    const block = document.getElementById(ctrlId);
+    const opts = block.querySelectorAll('.controle-optie');
+    const num = ctrlId.replace('ctrl','');
+    opts.forEach(o => { o.style.pointerEvents = 'none'; o.classList.remove('correct-ans','wrong-ans'); });
+    if (correct) {
+      el.classList.add('correct-ans');
+      el.querySelector('.opt-letter').textContent = '✓';
+    } else {
+      el.classList.add('wrong-ans');
+      el.querySelector('.opt-letter').textContent = '✗';
+      opts.forEach(o => { if (o.getAttribute('onclick') && o.getAttribute('onclick').includes(',true)')) o.classList.add('correct-ans'); });
+    }
+    document.getElementById('uitleg' + num).classList.add('show');
+  }
+
+  function updateBar() {
+    const pct = (done.size / TOTAL) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressCount').textContent = done.size + ' / ' + TOTAL + ' voltooid';
+  }
+</script>
+</body>
+</html>

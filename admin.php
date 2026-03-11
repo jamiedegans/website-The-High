@@ -117,25 +117,9 @@
 
 
     <!-- ===================== FOOTER ===================== -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <img src="img/logo.png" alt="The High Solan" class="footer-logo" />
-                <p class="footer-tagline">"The High because this always the hype"</p>
-            </div>
-            <div class="footer-col">
-                <h4>Navigate</h4>
-                <a href="index.html">Home</a>
-                <a href="menu.html">Menu</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 The High Solan – Amsterdam. All rights reserved.</p>
-        </div>
+      <footer>
+    <restaurant-footer></restaurant-footer>
     </footer>
-
 
     <!-- ===================== JAVASCRIPT ===================== -->
     <script src="javascript\javascript.js"></script>

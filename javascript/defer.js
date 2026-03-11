@@ -9,9 +9,7 @@ class RestaurantHeader extends HTMLElement {
     // Voeg HTML + CSS toe binnen Shadow DOM
     shadow.innerHTML = `
 <style>
-  @import url('css/style.css'); // sinds de dom zijn eigen scope heeft, moet je hier de css 
-  // importeren anderen werkt het niet de javascript doet het wel omdat die in de globale scope zit
-</style>
+  @import url('css/style.css');</style>
       <header class="site-header">
     <div class="header-inner">
       <a href="index.php" class="logo">
@@ -67,8 +65,7 @@ class RestaurantFooter extends HTMLElement {
     // Voeg HTML + CSS toe binnen Shadow DOM
     shadow.innerHTML = `
 <style>
-  @import url('css/style.css'); // sinds de dom zijn eigen scope heeft, moet je hier de css 
-  // importeren anderen werkt het niet de javascript doet het wel omdat die in de globale scope zit
+  @import url('css/style.css');
 </style>
   <footer class="site-footer">
     <div class="footer-inner">
@@ -105,6 +102,9 @@ class RestaurantFooter extends HTMLElement {
 
 
 // Registreer het custom element
+customElements.define('restaurant-header', RestaurantHeader);
+
+// Registreer het custom element
 customElements.define('restaurant-footer', RestaurantFooter);
 
 
@@ -130,7 +130,6 @@ function searchMenu(query) {
 function toggleMobileMenu() {
   document.getElementById('mobile-nav').classList.toggle('open');
 }
-
 
 /* ----------------------------------------------------------
    INIT — runs on every page load

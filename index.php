@@ -32,8 +32,8 @@
           <h1 class="hero-title">The High Solan</h1>
           <p class="hero-slogan">"The High because this always the hype"</p>
           <div class="hero-buttons">
-            <a href="menu.html" class="btn btn-primary">View Menu</a>
-            <a href="cart.html" class="btn btn-outline">Order Now</a>
+            <a href="menu.php" class="btn btn-primary">View Menu</a>
+            <a href="cart.php" class="btn btn-outline">Order Now</a>
           </div>
         </div>
 
@@ -56,7 +56,7 @@
         <!-- Cards rendered here by JavaScript -->
         <div class="card-row centered" id="featured-grid"></div>
         <div style="text-align:center; margin-top:2rem;">
-          <a href="menu.html" class="btn btn-outline">See Full Menu</a>
+          <a href="menu." class="btn btn-outline">See Full Menu</a>
         </div>
       </div>
     </section>
@@ -88,8 +88,6 @@
         </div>
       </div>
     </section>
-
-
   </main>
 
 
@@ -100,7 +98,7 @@
 
 
   <!-- ===================== JAVASCRIPT ===================== -->
-  <script src="javascript/+javascript.js">
+  <script src="javascript/javascript.js">
   </script>
   <script src="javascript/defer.js"></script>
   <script>
