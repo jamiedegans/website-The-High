@@ -51,7 +51,7 @@
                         is passionate about elevating every dish, every time. No shortcuts. No compromise.
                     </p>
                     <p class="about-slogan">"The High because this always the hype"</p>
-                    <a href="menu.html" class="btn btn-primary" style="margin-top:0.5rem;">
+                    <a href="menu.php" class="btn btn-primary" style="margin-top:0.5rem;">
                         <i class="fa fa-utensils"></i> View Our Menu
                     </a>
                 </div>
@@ -88,15 +88,15 @@
             </div>
             <div class="footer-col">
                 <h4>Navigate</h4>
-                <a href="index.html">Home</a>
-                <a href="menu.html">Menu</a>
-                <a href="about.html">About</a>
-                <a href="contact.html">Contact</a>
+                <a href="index.php">Home</a>
+                <a href="menu.php">Menu</a>
+                <a href="about.php">About</a>
+                <a href="contact.php">Contact</a>
             </div>
             <div class="footer-col">
                 <h4>Account</h4>
-                <a href="login.html">Login</a>
-                <a href="cart.html">My Cart</a>
+                <a href="login.php">Login</a>
+                <a href="cart.php">My Cart</a>
             </div>
             <div class="footer-col">
                 <h4>Visit Us</h4>
