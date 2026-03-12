@@ -26,7 +26,9 @@
     <!-- ============================================================
      HEADER — copy this to every page, change active nav link
 ============================================================ -->
-<header><restaurant-header></restaurant-header></header>
+    <?php
+    include_once 'costums/header.php';
+    ?>
     <!-- end HEADER -->
 
 

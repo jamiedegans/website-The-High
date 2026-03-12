@@ -1,3 +1,7 @@
+<?php
+include_once 'database.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,7 +22,11 @@
 
 
   <!-- ===================== HEADER ===================== -->
-  <header><restaurant-header></restaurant-header></header>
+
+    <?php
+    include_once 'costums/header.php';
+    ?>
+
   <!-- ===================== MAIN ===================== -->
   <main class="site-main">
 
@@ -92,11 +100,9 @@
 
 
   <!-- ===================== FOOTER ===================== -->
-  <footer>
-<restaurant-footer></restaurant-footer>
-  </footer>
-
-
+    <?php
+    include_once 'costums/footer.php';
+    ?>
   <!-- ===================== JAVASCRIPT ===================== -->
   <script src="javascript/javascript.js">
   </script>

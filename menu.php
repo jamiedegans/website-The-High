@@ -6,37 +6,25 @@ $password = 'password';
 $charset = 'utf8mb4';
 //opties
 $opties = [
-PDO ::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-PDO ::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-PDO ::ATTR_EMULATE_PREPARES => false,
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES => false,
 ];
 //dsn = data source name
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
 try {
-  //create the contection
-  $pdo = new PDO($dsn, $user, $password, $opties);
-  //succes melding
-  echo "Database connection goed <br/>";
+    //create the contection
+    $pdo = new PDO($dsn, $user, $password, $opties);
+    //succes melding
+    echo "Database connection goed <br/>";
 } catch (PDOException $e) {
-  //fout melding
-  echo $e->getMessage();
-  //stop (die)
-  die("sorry, database probleem"); 
+    //fout melding
+    echo $e->getMessage();
+    //stop (die)
+    die("sorry, database probleem");
 }
- $sql = "SELECT * FROM studenten WHERE leeftijd > 16";
- 
- $statement = $pdo->prepare($sql);
-
- $statement->execute();
-
- $studenten = $statement->fetchAll();  
-
- echo "<pre>";
- print_r($studenten);
-  echo "</pre>";
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,7 +43,9 @@ try {
 
 <body>
     <!-- ===================== HEADER ===================== -->
-<header><restaurant-header></restaurant-header></header>
+    <?php
+    include_once 'costums/header.php';
+    ?>
     <!-- ===================== MAIN ===================== -->
     <main class="site-main">
 
@@ -87,11 +77,9 @@ try {
 
 
     <!-- ===================== FOOTER ===================== -->
-  <footer>
-<restaurant-footer></restaurant-footer>
-  </footer>
-
-
+    <?php
+    include_once 'costums/footer.php';
+    ?>
     <!-- ===================== JAVASCRIPT ===================== -->
     <script src="javascript\javascript.js"></script>
     <script>

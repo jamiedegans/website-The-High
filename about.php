@@ -18,7 +18,10 @@
 
 
     <!-- ===================== HEADER ===================== -->
-<header><restaurant-header></restaurant-header></header>
+
+    <?php
+    include_once 'costums/header.php';
+    ?>
     <!-- ===================== MAIN ===================== -->
     <main class="site-main">
 
