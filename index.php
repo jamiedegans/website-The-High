@@ -27,6 +27,35 @@ include_once 'database.php';
     include_once 'costums/header.php';
     ?>
 
+        <h1>proberen eten de zoeken</h1>
+    <form name="searchBar" action="menu.php" method="post">
+        <div> zoekbar <input name="zoekopdracht" type="text"></div>
+
+        <div>
+        <input name="submit" type="submit"/> <input type="reset"/>
+        </div>
+    </form>
+
+
+
+
+    <?php
+    echo "<pre>";
+    print_r($_POST);
+    echo "</pre>";
+
+    if(isset($_POST['submit'])){
+        $getal1 = $_POST['getal1'];
+
+        $sql = "SELECT * FROM menu WHERE name LIKE '%$zoekopdracht%'";
+        $statement = $pdo->prepare($sql);
+        $statement->execute();
+        $menuItems = $statement->fetchAll();
+
+        echo count($menuItems);
+    }
+?>
+
   <!-- ===================== MAIN ===================== -->
   <main class="site-main">
 

@@ -1,30 +1,8 @@
 <?php
-$host = 'db';
-$db = 'mydatabase';
-$user = 'user';
-$password = 'password';
-$charset = 'utf8mb4';
-//opties
-$opties = [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES => false,
-];
-//dsn = data source name
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-
-try {
-    //create the contection
-    $pdo = new PDO($dsn, $user, $password, $opties);
-    //succes melding
-    echo "Database connection goed <br/>";
-} catch (PDOException $e) {
-    //fout melding
-    echo $e->getMessage();
-    //stop (die)
-    die("sorry, database probleem");
-}
+include_once 'database.php';
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -69,10 +47,76 @@ try {
 
         <!-- Menu grid — 3 cards per row, wraps on smaller screens -->
         <div class="inner" style="padding-bottom:4rem;">
-            <div class="card-row" id="menu-grid" style="flex-wrap:wrap;"></div>
+            <div class="card-row" id="menu-grid" style="flex-wrap:wrap;">
+                <?php
+                $sql = "SELECT * FROM menu";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                $menuItems = $stmt->fetchAll();
+              
+       
+
+                foreach ($menuItems as $menuItem) {
+                    $image_url = $menuItem['image_url'];
+                    if ($image_url == "" || $image_url === null) {
+                        $image_url = "images/dishes/placeholder.png";
+                    } else {
+                        $image_url = "images/dishes/" . $image_url. ".png";
+                    }
+                    ?>
+
+                    
+                    <div class="menu-card">
+                        <div class="card-img-wrap">
+                            <img src="<?php echo $image_url; ?>" alt="<?php echo $menuItem['naam']; ?>" />
+                            <span class="card-badge">
+                                <?php echo $menuItem['category']; ?>
+                            </span>
+                        </div>
+
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <?php echo $menuItem['naam']; ?>
+                            </h3>
+                            <p class="card-desc">
+                                <?php echo $menuItem['ingredients']; ?>
+                            </p>
+                            <p class="card-price">€
+                                <?php echo number_format($menuItem['prijs'], 2); ?>
+                            </p>
+
+                            <!-- Toggle button — shows ingredients & allergens -->
+                            <button class="btn-allergen" onclick="toggleAllergens(<?php echo $menuItem['id']; ?>)">
+                                <i class="fa fa-info-circle"></i> Ingredients & Allergens
+                            </button>
+
+                            <!-- Allergen panel — hidden by default, opens on click -->
+                            <div class="allergen-panel" id="allergen-<?php echo $menuItem['id']; ?>">
+                                <p><strong>Ingredients:</strong>
+                                    <?php echo $menuItem['ingredients']; ?>
+                                </p>
+                                <p><strong>Allergens:</strong></p>
+                                <div class="allergen-tags">
+                                    <?php echo $menuItem['allergens']; ?>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary btn-sm" onclick="addToCart(<?php echo $menuItem['id']; ?>)">
+                                <i class="fa fa-plus"></i> Add to Cart
+                            </button>
+                        </div>
+
+                    </div>
+                    <?php
+                }
+                ?>
+
+
+
+
+
+            </div>
         </div>
-
-
     </main>
 
 

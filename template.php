@@ -46,7 +46,6 @@
      FOOTER — copy this to every page
 ============================================================ -->
   <footer>
-<restaurant-footer></restaurant-footer>
   </footer>
 
     <!-- end FOOTER -->

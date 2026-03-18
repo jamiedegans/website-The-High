@@ -27,7 +27,3 @@ INSERT INTO menu (naam, prijs, category, ingredients, image_url, allergens, feat
 ('Dark Chocolate Fondant', 10.00, 'desserts', 'dark chocolate, salted caramel, butter, eggs, flour', 'img/dish-6.jpg', 'gluten, dairy, eggs', true);
 
 
--- Overzicht
--- SELECT klas, COUNT(*) AS aantal FROM studenten GROUP BY klas ORDER BY klas;
--- SELECT gender, COUNT(*) AS aantal FROM studenten GROUP BY gender ORDER BY aantal DESC;
-
