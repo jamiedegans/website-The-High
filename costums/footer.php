@@ -2,7 +2,7 @@
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <img src="img/logo.png" alt="The High Solan" class="footer-logo" />
+        <img src="images\logo.png" alt="The High Solan" class="footer-logo" />
         <p class="footer-tagline">"The High because this always the hype"</p>
       </div>
       <div class="footer-col">

@@ -1,4 +1,6 @@
 <?php
+
+use const Dom\NOT_FOUND_ERR;
 include_once 'database.php';
 ?>
 
@@ -23,38 +25,36 @@ include_once 'database.php';
 
   <!-- ===================== HEADER ===================== -->
 
-    <?php
-    include_once 'costums/header.php';
-    ?>
+  <?php
+  include_once 'costums/header.php';
+  ?>
 
-        <h1>proberen eten de zoeken</h1>
-    <form name="searchBar" action="menu.php" method="post">
-        <div> zoekbar <input name="zoekopdracht" type="text"></div>
+  <h1>proberen eten de zoeken</h1>
+  <form name="searchBar" action="menu.php" method="post">
+    <div> zoekbar <input name="zoekopdracht" type="text"></div>
 
-        <div>
-        <input name="submit" type="submit"/> <input type="reset"/>
-        </div>
-    </form>
+    <div>
+      <input name="submit" type="submit" /> <input type="reset" />
+    </div>
+  </form>
+
+  <?php
+  echo "<pre>";
+  print_r($_POST);
+  echo "</pre>";
+
+  if (isset($_POST['submit'])) {
+    $zoekopdracht = $_POST['zoekopdracht'];
 
 
+    $sql = "SELECT * FROM menu WHERE name LIKE ?";
+    $statement = $pdo->prepare($sql);
+    $statement->execute(['%' . $zoekopdracht . '%']);
+    $menuItems = $statement->fetchAll();
 
-
-    <?php
-    echo "<pre>";
-    print_r($_POST);
-    echo "</pre>";
-
-    if(isset($_POST['submit'])){
-        $getal1 = $_POST['getal1'];
-
-        $sql = "SELECT * FROM menu WHERE name LIKE '%$zoekopdracht%'";
-        $statement = $pdo->prepare($sql);
-        $statement->execute();
-        $menuItems = $statement->fetchAll();
-
-        echo count($menuItems);
-    }
-?>
+    echo count($menuItems) . " results found!";
+  }
+  ?>
 
   <!-- ===================== MAIN ===================== -->
   <main class="site-main">
@@ -129,9 +129,9 @@ include_once 'database.php';
 
 
   <!-- ===================== FOOTER ===================== -->
-    <?php
-    include_once 'costums/footer.php';
-    ?>
+  <?php
+  include_once 'costums/footer.php';
+  ?>
   <!-- ===================== JAVASCRIPT ===================== -->
   <script src="javascript/javascript.js">
   </script>

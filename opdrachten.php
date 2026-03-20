@@ -17,9 +17,52 @@
         <div>
         <input name="submit" type="submit"/> <input type="reset"/>
         </div>
-    </form>
 
+                    <script>console.log(<?php echo $menuItem['id']; ?>);</script>
+                    <div class="menu-card">
+                        <div class="card-img-wrap">
+                            <img src="<?php echo $image_url; ?>" alt="<?php echo $menuItem['naam']; ?>" />
+                            <span class="card-badge">
+                                <?php echo $menuItem['category']; ?>
+                            </span>
+                        </div>
 
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <?php echo $menuItem['naam']; ?>
+                            </h3>
+                            <p class="card-desc">
+                                <?php echo $menuItem['ingredients']; ?>
+                            </p>
+                            <p class="card-price">€
+                                <?php echo number_format($menuItem['prijs'], 2); ?>
+                            </p>
+
+                            <!-- Toggle button — shows ingredients & allergens -->
+                            <button class="btn-allergen" onclick="toggleAllergens(<?php echo $menuItem['id']; ?>)">
+                                <i class="fa fa-info-circle"></i> Ingredients & Allergens
+                            </button>
+
+                            <!-- Allergen panel — hidden by default, opens on click -->
+                            <div class="allergen-panel" id="allergen-<?php echo $menuItem['id']; ?>">
+                                <p><strong>Ingredients:</strong>
+                                    <?php echo $menuItem['ingredients']; ?>
+                                </p>
+                                <p><strong>Allergens:</strong></p>
+                                <div class="allergen-tags">
+                                    <?php echo $menuItem['allergens']; ?>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary btn-sm" onclick="addToCart(<?php echo $menuItem['id']; ?>)">
+                                <i class="fa fa-plus"></i> Add to Cart
+                            </button>
+                        </div>
+
+                    </div>
+                    <?php
+                }
+                ?>
 
 
     <?php

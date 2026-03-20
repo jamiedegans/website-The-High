@@ -1,6 +1,32 @@
 <?php
 include_once 'database.php';
+
+
+
+$sql = "SELECT * FROM menu";
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$menuItems = $stmt->fetchAll();
+
+
+
+if (isset($_POST['submit'])) {
+    $zoekopdracht = $_POST['zoekopdracht'];}
+    if (isset($_POST[''])) {
+
+    echo $zoekopdracht; 
+
+
+
+    //     // $sql = "SELECT * FROM menu WHERE name LIKE ?";
+//     $statement = $pdo->prepare($sql);
+//     $statement->execute(['%' . $zoekopdracht . '%']);
+//     $menuItems = $statement->fetchAll();
+
+    //   echo count($menuItems) . " results found!";
+}
 ?>
+
 
 
 <!DOCTYPE html>
@@ -49,23 +75,16 @@ include_once 'database.php';
         <div class="inner" style="padding-bottom:4rem;">
             <div class="card-row" id="menu-grid" style="flex-wrap:wrap;">
                 <?php
-                $sql = "SELECT * FROM menu";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute();
-                $menuItems = $stmt->fetchAll();
-              
-       
-
                 foreach ($menuItems as $menuItem) {
                     $image_url = $menuItem['image_url'];
                     if ($image_url == "" || $image_url === null) {
                         $image_url = "images/dishes/placeholder.png";
                     } else {
-                        $image_url = "images/dishes/" . $image_url. ".png";
+                        $image_url = "images/dishes/" . $image_url . ".png";
                     }
                     ?>
 
-                    
+
                     <div class="menu-card">
                         <div class="card-img-wrap">
                             <img src="<?php echo $image_url; ?>" alt="<?php echo $menuItem['naam']; ?>" />

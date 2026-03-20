@@ -1,7 +1,7 @@
 <header class="site-header">
     <div class="header-inner">
         <a href="index.php" class="logo">
-            <img src="img/logo.png" alt="The High Solan" class="logo-img" />
+            <img src="images\logo.png" alt="The High Solan" class="logo-img" />
             <span class="logo-text">The High Solan</span>
         </a>
         <nav class="main-nav">
