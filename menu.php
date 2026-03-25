@@ -1,37 +1,33 @@
 <?php
 include_once 'database.php';
+echo 'zoekopdracht: ' . ($_GET['zoekopdracht'] ?? ''); // Debug: show the search query
+$zoekopdracht = $_GET['zoekopdracht'] ?? '';
+
+var_dump($zoekopdracht);
 
 
-
-$sql = "SELECT * FROM menu";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$menuItems = $stmt->fetchAll();
-
-
-
-if (isset($_POST['submit'])) {
-    $zoekopdracht = $_POST['zoekopdracht'];}
-    if (isset($_POST[''])) {
-
-    echo $zoekopdracht; 
-
-
-
-    //     // $sql = "SELECT * FROM menu WHERE name LIKE ?";
-//     $statement = $pdo->prepare($sql);
-//     $statement->execute(['%' . $zoekopdracht . '%']);
-//     $menuItems = $statement->fetchAll();
-
-    //   echo count($menuItems) . " results found!";
+if ($zoekopdracht == '') {
+    $sql = "SELECT * FROM menu";
+    $statement = $pdo->prepare($sql);
+    $statement->execute();
+} else {
+    $sql = "SELECT * FROM menu WHERE naam LIKE ? OR ingredients LIKE ? OR allergens LIKE ?";
+    $statement = $pdo->prepare($sql);
+    $statement->execute([
+        '%' . $zoekopdracht . '%',
+        '%' . $zoekopdracht . '%',
+        '%' . $zoekopdracht . '%'
+    ]);
 }
+$menuItems = $statement->fetchAll();
+
 ?>
+
 
 
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -75,6 +71,7 @@ if (isset($_POST['submit'])) {
         <div class="inner" style="padding-bottom:4rem;">
             <div class="card-row" id="menu-grid" style="flex-wrap:wrap;">
                 <?php
+
                 foreach ($menuItems as $menuItem) {
                     $image_url = $menuItem['image_url'];
                     if ($image_url == "" || $image_url === null) {
@@ -129,11 +126,6 @@ if (isset($_POST['submit'])) {
                     <?php
                 }
                 ?>
-
-
-
-
-
             </div>
         </div>
     </main>
@@ -144,7 +136,7 @@ if (isset($_POST['submit'])) {
     include_once 'costums/footer.php';
     ?>
     <!-- ===================== JAVASCRIPT ===================== -->
-    <script src="javascript\javascript.js"></script>
+    <script src="javascript/menu.js"></script>
     <script>
 
         /* Render all menu items (or a filtered subset) */
@@ -198,7 +190,6 @@ if (isset($_POST['submit'])) {
         checkUrlQuery();
 
     </script>
-
 </body>
 
 </html>

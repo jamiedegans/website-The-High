@@ -30,19 +30,16 @@ include_once 'database.php';
   ?>
 
   <h1>proberen eten de zoeken</h1>
-  <form name="searchBar" action="menu.php" method="post">
+  <form name="searchBar" action="menu.php" method="get">
     <div> zoekbar <input name="zoekopdracht" type="text"></div>
 
     <div>
-      <input name="submit" type="submit" /> <input type="reset" />
+      <input value="Search" name="submit" type="submit" /> <input type="reset" />
     </div>
   </form>
 
   <?php
-  echo "<pre>";
-  print_r($_POST);
-  echo "</pre>";
-
+ 
   if (isset($_POST['submit'])) {
     $zoekopdracht = $_POST['zoekopdracht'];
 
@@ -53,6 +50,14 @@ include_once 'database.php';
     $menuItems = $statement->fetchAll();
 
     echo count($menuItems) . " results found!";
+  }
+
+  if (isset($_POST['submit'])) {
+    $zoekopdracht = $_POST['zoekopdracht'];
+  }
+  if (isset($_POST[''])) {
+    $zoekopdracht = $_POST[''];
+
   }
   ?>
 
