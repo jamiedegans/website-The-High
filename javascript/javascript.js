@@ -100,69 +100,69 @@ function logoutUser() {
    BUILD MENU CARD — returns HTML string
    Reused on index.html (featured) and menu.html (full grid)
 ---------------------------------------------------------- */
-function buildMenuCard(item) {
-    /* Build allergen tag HTML */
-    let allergenTags = '';
-    item.allergens.forEach(function (a) {
-        allergenTags += '<span class="allergen-tag">' + a + '</span>';
-    });
+// function buildMenuCard(item) {
+//     /* Build allergen tag HTML */
+//     let allergenTags = '';
+//     item.allergens.forEach(function (a) {
+//         allergenTags += '<span class="allergen-tag">' + a + '</span>';
+//     });
 
-    return `
-    <div class="menu-card">
+//     return `
+//     <div class="menu-card">
 
-      <div class="card-img-wrap">
-        <img src="${item.image}" alt="${item.name}" />
-        <span class="card-badge">${item.category}</span>
-      </div>
+//       <div class="card-img-wrap">
+//         <img src="${item.image}" alt="${item.name}" />
+//         <span class="card-badge">${item.category}</span>
+//       </div>
 
-      <div class="card-body">
-        <h3 class="card-title">${item.name}</h3>
-        <p class="card-desc">${item.description}</p>
-        <p class="card-price">€ ${item.price.toFixed(2)}</p>
+//       <div class="card-body">
+//         <h3 class="card-title">${item.name}</h3>
+//         <p class="card-desc">${item.description}</p>
+//         <p class="card-price">€ ${item.price.toFixed(2)}</p>
 
-        <!-- Toggle button — shows ingredients & allergens -->
-        <button class="btn-allergen" onclick="toggleAllergens(${item.id})">
-          <i class="fa fa-info-circle"></i> Ingredients & Allergens
-        </button>
+//         <!-- Toggle button — shows ingredients & allergens -->
+//         <button class="btn-allergen" onclick="toggleAllergens(${item.id})">
+//           <i class="fa fa-info-circle"></i> Ingredients & Allergens
+//         </button>
 
-        <!-- Allergen panel — hidden by default, opens on click -->
-        <div class="allergen-panel" id="allergen-${item.id}">
-          <p><strong>Ingredients:</strong> ${item.ingredients.join(', ')}</p>
-          <p><strong>Allergens:</strong></p>
-          <div class="allergen-tags">${allergenTags}</div>
-        </div>
+//         <!-- Allergen panel — hidden by default, opens on click -->
+//         <div class="allergen-panel" id="allergen-${item.id}">
+//           <p><strong>Ingredients:</strong> ${item.ingredients.join(', ')}</p>
+//           <p><strong>Allergens:</strong></p>
+//           <div class="allergen-tags">${allergenTags}</div>
+//         </div>
 
-        <button class="btn btn-primary btn-sm" onclick="addToCart(${item.id})">
-          <i class="fa fa-plus"></i> Add to Cart
-        </button>
-      </div>
+//         <button class="btn btn-primary btn-sm" onclick="addToCart(${item.id})">
+//           <i class="fa fa-plus"></i> Add to Cart
+//         </button>
+//       </div>
 
-    </div>
-  `;
-}
+//     </div>
+//   `;
+// }
 
-/* Toggle allergen panel open/closed */
-function toggleAllergens(itemId) {
-    const panel = document.getElementById('allergen-' + itemId);
-    if (panel) panel.classList.toggle('open');
-}
+// /* Toggle allergen panel open/closed */
+// function toggleAllergens(itemId) {
+//     const panel = document.getElementById('allergen-' + itemId);
+//     if (panel) panel.classList.toggle('open');
+// }
 
 
-/* ----------------------------------------------------------
-   SEARCH — filter menu items by name, description or ingredients
----------------------------------------------------------- */
-function searchMenu(query) {
-    const q = query.trim().toLowerCase();
-    if (q === '') return menuItems;
+// /* ----------------------------------------------------------
+//    SEARCH — filter menu items by name, description or ingredients
+// ---------------------------------------------------------- */
+// function searchMenu(query) {
+//     const q = query.trim().toLowerCase();
+//     if (q === '') return menuItems;
 
-    return menuItems.filter(function (item) {
-        return (
-            item.name.toLowerCase().includes(q) ||
-            item.description.toLowerCase().includes(q) ||
-            item.ingredients.join(' ').toLowerCase().includes(q)
-        );
-    });
-}
+//     return menuItems.filter(function (item) {
+//         return (
+//             item.name.toLowerCase().includes(q) ||
+//             item.description.toLowerCase().includes(q) ||
+//             item.ingredients.join(' ').toLowerCase().includes(q)
+//         );
+//     });
+// }
 
 
 /* ----------------------------------------------------------

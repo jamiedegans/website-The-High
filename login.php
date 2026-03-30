@@ -1,3 +1,6 @@
+<?php
+include_once 'database.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,15 +23,84 @@
     <!-- ===================== HEADER ===================== -->
     <?php
     include_once 'costums/header.php';
+
+    if (isset($_POST['submit'])) {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $checkemail = "SELECT * FROM users WHERE email='$email'";
+        $result = $pdo->query($checkemail);
+        $results = $conn->query("$checkemail");
+        if ($result->num_rows() > 0) {
+            echo "Email exists, proceed with login";
+        } else {
+            echo "Email does not exist";
+            $insertQuery="INSERT INTO users (email, password) 
+            VALUES ('$email', '$password')";
+            if ($conn->query($insertQuery)== TRUE) {
+                echo "New record created successfully";
+                header("location: index.php");
+            } else {
+                echo "Error: " . $conn->error;
+            }
+        }
+    }
+    if(isset($_POST['submit'])){
+       $email = $_POST['email'];
+         $password = $_POST['password'];    
+         $password = md5($password);
+         $sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
+         $result = $conn->query($sql);
+         if ($result->num_rows() > 0) {
+            session_start();
+            $_SESSION['email'] = $email;
+            header("location: opdrachten.php");
+            exit();
+
+        } else {
+            echo "Invalid email or password";
+
+        }
+    }
     ?>
     <!-- ===================== MAIN ===================== -->
     <main class="site-main">
 
         <div class="auth-wrapper">
             <div class="auth-card">
+                <div>
+                    <h1>Register</h1>
+                    <form method="post" action="">
+                        <div class="">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="fNAme" id="FName" placeholder="First name" required />
+                            <label for="FName">First name</label>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="lNAme" id="LName" placeholder="Last name" required />
+                            <label for="LName">Last name</label>
+
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" name="email" id="email" placeholder="Email address" required />
+                            <label for="email">Email address</label>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" id="password" placeholder="Password" required />
+                            <label for="password">Password</label>
+                        </div>
+                        <input type="submit" value="Sign Up" name="SignUp" class="btn btn-primary btn-full" />
+                    </form>
+                </div>
+
+
+
+
 
                 <!-- Logo + title -->
-                <div class="auth-header">
+                <div cla44ss="auth-header">
                     <img src="img/logo.png" alt="The High Solan" class="auth-logo-img" />
                     <h2>The High Solan</h2>
                     <p class="subtitle">Sign in to your account</p>

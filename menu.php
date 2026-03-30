@@ -1,10 +1,7 @@
 <?php
 include_once 'database.php';
-echo 'zoekopdracht: ' . ($_GET['zoekopdracht'] ?? ''); // Debug: show the search query
+
 $zoekopdracht = $_GET['zoekopdracht'] ?? '';
-
-var_dump($zoekopdracht);
-
 
 if ($zoekopdracht == '') {
     $sql = "SELECT * FROM menu";
@@ -20,7 +17,6 @@ if ($zoekopdracht == '') {
     ]);
 }
 $menuItems = $statement->fetchAll();
-
 ?>
 
 
@@ -55,12 +51,6 @@ $menuItems = $statement->fetchAll();
             <h2>Our Menu</h2>
             <p>Fresh ingredients, bold flavours</p>
 
-            <!-- Big search bar on menu page -->
-            <div class="search-bar" style="max-width:500px; margin:1.5rem auto 0; border-radius:8px;">
-                <input type="text" id="menu-search" placeholder="Search a dish, ingredient or allergen..."
-                    oninput="handleSearch(this.value)" style="width:100%; padding:0.75rem 1rem; font-size:0.95rem;" />
-                <button class="search-btn"><i class="fa fa-search"></i></button>
-            </div>
 
             <!-- Search result count -->
             <p id="search-notice" style="margin-top:0.75rem; font-size:0.85rem; color:#7C7C7C;"></p>

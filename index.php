@@ -1,6 +1,14 @@
 <?php
 
-use const Dom\NOT_FOUND_ERR;
+if (isset($_GET['submit'])) {
+    $zoekopdracht = $_GET['zoekopdracht'];
+    $sql = "SELECT * FROM menu WHERE name LIKE ?";
+    $statement = $pdo->prepare($sql);
+    $statement->execute(['%' . $zoekopdracht . '%']);
+    $menuItems = $statement->fetchAll();
+    echo count($menuItems) . " results found!";
+}
+
 include_once 'database.php';
 ?>
 
@@ -28,39 +36,6 @@ include_once 'database.php';
   <?php
   include_once 'costums/header.php';
   ?>
-
-  <h1>proberen eten de zoeken</h1>
-  <form name="searchBar" action="menu.php" method="get">
-    <div> zoekbar <input name="zoekopdracht" type="text"></div>
-
-    <div>
-      <input value="Search" name="submit" type="submit" /> <input type="reset" />
-    </div>
-  </form>
-
-  <?php
- 
-  if (isset($_POST['submit'])) {
-    $zoekopdracht = $_POST['zoekopdracht'];
-
-
-    $sql = "SELECT * FROM menu WHERE name LIKE ?";
-    $statement = $pdo->prepare($sql);
-    $statement->execute(['%' . $zoekopdracht . '%']);
-    $menuItems = $statement->fetchAll();
-
-    echo count($menuItems) . " results found!";
-  }
-
-  if (isset($_POST['submit'])) {
-    $zoekopdracht = $_POST['zoekopdracht'];
-  }
-  if (isset($_POST[''])) {
-    $zoekopdracht = $_POST[''];
-
-  }
-  ?>
-
   <!-- ===================== MAIN ===================== -->
   <main class="site-main">
 
