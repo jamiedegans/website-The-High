@@ -37,7 +37,7 @@
 
                 <div style="flex:1;">
                     <!-- Replace img/interior.jpg with your own interior photo -->
-                    <img src="img/interior.jpg" alt="The High Solan interior"
+                    <img src="images/insideview.png" alt="The High Solan interior"
                         style="width:100%; height:380px; border-radius:10px; border:1px solid #2a2a2a;" />
                 </div>
 
@@ -65,10 +65,10 @@
             <div class="card-row" style="margin-top:1rem;">
                 <!-- Replace these images with your own interior photos -->
                 <div class="photo-card">
-                    <img src="img/interior-2.jpg" alt="Interior view 1" />
+                    <img src="images/view1png.png" alt="Interior view 1" />
                 </div>
                 <div class="photo-card">
-                    <img src="img/interior-3.jpg" alt="Interior view 2" />
+                    <img src="images/view2.png" alt="Interior view 2" />
                 </div>
                 <div class="photo-card">
                     <img src="img/interior-4.jpg" alt="Interior view 3" />

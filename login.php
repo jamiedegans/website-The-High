@@ -1,6 +1,48 @@
 <?php
+session_start();
 include_once 'database.php';
+
+if (isset($_POST['submit'])) {
+    $email = $_POST['email']; // get email from input field
+    $password = $_POST['password']; // get the password from input
+
+    $password_confirm = $_POST[''];//step 1 tring to find user by
+    $sql = "SELECT * FROM users WHERE email= ?"; // try to find by email using safe ? placeholder
+    $statement = $pdo->prepare($sql);
+    $statement->execute([$email]);
+    $user = $statement->fetchColumn(); // goes for matching if any
+
+    //step 2 check for user and password match
+    //compares the data with the data in the database
+    if ($user && password_verify($password, $user['password']))
+    //step 3 saves the session
+    {
+        $_SESSION['user_id'] = $user['id']; // remebers who logged in
+        $_SESSION['role'] = $user['role']; //  remebers if admin of staff guest loged in
+        $_SESSION['role'] = $user['email']; // only remmebers thier email
+
+        // stap 4 sends to the right page
+        if ($user['role'] == 'admin') {
+            header("location admin.php"); // ← sent to page
+            exit();
+        } elseif ($user['role'] == 'worker') {
+            header("location: worker.php");     // ← sent to page
+            exit();
+        } else {
+            header("location: menu.php"); // ← sent to page
+            exit();
+        }
+    } else {
+        // Wrong email or wrong password
+        $error = "Invalid email or password.";
+    }
+}
 ?>
+
+<?php if (isset($error)) { ?>
+    <p style="color:red;"><?php echo $error; ?></p>
+<?php } ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,44 +65,6 @@ include_once 'database.php';
     <!-- ===================== HEADER ===================== -->
     <?php
     include_once 'costums/header.php';
-
-    if (isset($_POST['submit'])) {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        $checkemail = "SELECT * FROM users WHERE email='$email'";
-        $result = $pdo->query($checkemail);
-        $results = $conn->query("$checkemail");
-        if ($result->num_rows() > 0) {
-            echo "Email exists, proceed with login";
-        } else {
-            echo "Email does not exist";
-            $insertQuery="INSERT INTO users (email, password) 
-            VALUES ('$email', '$password')";
-            if ($conn->query($insertQuery)== TRUE) {
-                echo "New record created successfully";
-                header("location: index.php");
-            } else {
-                echo "Error: " . $conn->error;
-            }
-        }
-    }
-    if(isset($_POST['submit'])){
-       $email = $_POST['email'];
-         $password = $_POST['password'];    
-         $password = md5($password);
-         $sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
-         $result = $conn->query($sql);
-         if ($result->num_rows() > 0) {
-            session_start();
-            $_SESSION['email'] = $email;
-            header("location: opdrachten.php");
-            exit();
-
-        } else {
-            echo "Invalid email or password";
-
-        }
-    }
     ?>
     <!-- ===================== MAIN ===================== -->
     <main class="site-main">
@@ -68,84 +72,60 @@ include_once 'database.php';
         <div class="auth-wrapper">
             <div class="auth-card">
                 <div>
-                    <h1>Register</h1>
-                    <form method="post" action="">
-                        <div class="">
-                            <i class="fas fa-user"></i>
-                            <input type="text" name="fNAme" id="FName" placeholder="First name" required />
-                            <label for="FName">First name</label>
-                        </div>
-                        <div class="input-group">
-                            <i class="fas fa-user"></i>
-                            <input type="text" name="lNAme" id="LName" placeholder="Last name" required />
-                            <label for="LName">Last name</label>
+                    <h1>login try 8</h1>
 
-                        </div>
-                        <div class="input-group">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" name="email" id="email" placeholder="Email address" required />
-                            <label for="email">Email address</label>
-                        </div>
-                        <div class="input-group">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" name="password" id="password" placeholder="Password" required />
-                            <label for="password">Password</label>
-                        </div>
-                        <input type="submit" value="Sign Up" name="SignUp" class="btn btn-primary btn-full" />
+                    <form action="login.php" method="post">
+                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="password" name="password" placeholder="Password" required>
+                        <button type="submit" name="submit">Login</button>
                     </form>
+                    <!-- Logo + title -->
+                    <div class="auth-header">
+                        <img src="img/logo.png" alt="The High Solan" class="auth-logo-img" />
+                        <h2>The High Solan</h2>
+                        <p class="subtitle">Sign in to your account</p>
+                    </div>
+
+                    <!-- Login form -->
+                    <!-- TODO: connect form action to your database / backend -->
+                    <form class="auth-form" id="login-form" onsubmit="handleLogin(event)">
+
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email address</label>
+                            <input type="email" id="email" class="form-input" placeholder="you@example.com" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="password">Password</label>
+                            <input type="password" id="password" class="form-input" placeholder="••••••••" required />
+                        </div>
+
+                        <!-- Role selector — employee / owner get different redirects -->
+                        <div class="form-group">
+                            <label class="form-label" for="role">Role</label>
+                            <select id="role" class="form-input form-select">
+                                <option value="customer">Customer</option>
+                                <option value="employee">Employee</option>
+                                <option value="owner">Owner / Admin</option>
+                            </select>
+                        </div>
+
+                        <!-- Error shown here -->
+                        <p class="form-error" id="login-error"></p>
+
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fa fa-sign-in-alt"></i> Sign In
+                        </button>
+
+                    </form>
+
+                    <p class="auth-note">
+                        <!-- Remove this note when you connect a real database -->
+                        Demo only: use any email + password <strong>admin</strong> to log in.
+                    </p>
+
                 </div>
-
-
-
-
-
-                <!-- Logo + title -->
-                <div cla44ss="auth-header">
-                    <img src="img/logo.png" alt="The High Solan" class="auth-logo-img" />
-                    <h2>The High Solan</h2>
-                    <p class="subtitle">Sign in to your account</p>
-                </div>
-
-                <!-- Login form -->
-                <!-- TODO: connect form action to your database / backend -->
-                <form class="auth-form" id="login-form" onsubmit="handleLogin(event)">
-
-                    <div class="form-group">
-                        <label class="form-label" for="email">Email address</label>
-                        <input type="email" id="email" class="form-input" placeholder="you@example.com" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="password">Password</label>
-                        <input type="password" id="password" class="form-input" placeholder="••••••••" required />
-                    </div>
-
-                    <!-- Role selector — employee / owner get different redirects -->
-                    <div class="form-group">
-                        <label class="form-label" for="role">Role</label>
-                        <select id="role" class="form-input form-select">
-                            <option value="customer">Customer</option>
-                            <option value="employee">Employee</option>
-                            <option value="owner">Owner / Admin</option>
-                        </select>
-                    </div>
-
-                    <!-- Error shown here -->
-                    <p class="form-error" id="login-error"></p>
-
-                    <button type="submit" class="btn btn-primary btn-full">
-                        <i class="fa fa-sign-in-alt"></i> Sign In
-                    </button>
-
-                </form>
-
-                <p class="auth-note">
-                    <!-- Remove this note when you connect a real database -->
-                    Demo only: use any email + password <strong>admin</strong> to log in.
-                </p>
-
             </div>
-        </div>
 
     </main>
 

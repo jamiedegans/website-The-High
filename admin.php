@@ -1,6 +1,22 @@
 <?php
 include_once 'database.php';
+
+session_start();
+
+// If not logged in at all → send to login
+if (!isset($_SESSION['user_id'])) {
+    header("location: login.php");
+    exit();
+}
+
+// If logged in but not admin → send away
+if ($_SESSION['role'] !== 'admin') {
+    header("location: index.php");
+    exit();
+}
+// If we get here, they are logged in AND are an admin 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
