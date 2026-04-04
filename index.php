@@ -1,12 +1,12 @@
 <?php
 
 if (isset($_GET['submit'])) {
-    $zoekopdracht = $_GET['zoekopdracht'];
-    $sql = "SELECT * FROM menu WHERE name LIKE ?";
-    $statement = $pdo->prepare($sql);
-    $statement->execute(['%' . $zoekopdracht . '%']);
-    $menuItems = $statement->fetchAll();
-    echo count($menuItems) . " results found!";
+  $zoekopdracht = $_GET['zoekopdracht'];
+  $sql = "SELECT * FROM menu WHERE name LIKE ?";
+  $statement = $pdo->prepare($sql);
+  $statement->execute(['%' . $zoekopdracht . '%']);
+  $menuItems = $statement->fetchAll();
+  echo count($menuItems) . " results found!";
 }
 
 include_once 'database.php';
@@ -56,7 +56,7 @@ include_once 'database.php';
 
         <div class="hero-image">
           <!-- Replace img/hero.jpg with your own photo -->
-          <img src="img/hero.jpg" alt="Signature dish from The High Solan" class="hero-img" />
+          <img src="images\insideview.png" alt="Signature dish from The High Solan" class="hero-img" />
         </div>
 
       </div>

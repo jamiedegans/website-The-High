@@ -1,25 +1,50 @@
 <?php
-include_once 'database.php';
-
 session_start();
 
-// If not logged in at all → send to login
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("location: login.php");
     exit();
 }
-
-// If logged in but not admin → send away
-if ($_SESSION['role'] !== 'admin') {
-    header("location: index.php");
-    exit();
-}
-// If we get here, they are logged in AND are an admin 
 ?>
 
+<?php
+include_once 'database.php';
+
+// Handle ADD item
+if (isset($_POST['add_item'])) {
+    $sql = "INSERT INTO menu (naam, prijs, category, ingredients, allergens, featured, image_url) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $statement = $pdo->prepare($sql);
+    $statement->execute([
+        $_POST['dish-name'],
+        $_POST['dish-price'],
+        $_POST['dish-category'],
+        $_POST['dish-ingredients'],
+        $_POST['dish-allergens'],
+        $_POST['dish-featured'],
+        ''  // empty image no image currently, can be updated later
+    ]);
+    $add_notice = '✓ "' . $_POST['dish-name'] . '" added to the menu.';
+}
+
+// Handle REMOVE item
+if (isset($_POST['remove_item'])) {
+    $sql = "DELETE FROM menu WHERE id = ?";
+    $statement = $pdo->prepare($sql);
+    $statement->execute([$_POST['item_id']]);
+    echo '✓ Item removed from the menu.';
+}
+
+// Fetch all menu items
+$sql = "SELECT * FROM menu";
+$statement = $pdo->prepare($sql);
+$statement->execute();
+$menuItems = $statement->fetchAll();
+?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -47,195 +72,105 @@ if ($_SESSION['role'] !== 'admin') {
             <h2>Admin Panel</h2>
             <p>Manage the menu — connect to database when ready</p>
         </div>
-
         <div class="inner" style="padding-bottom:4rem;">
             <div class="admin-layout">
 
-
-                <!-- LEFT BOX: Add new menu item -->
+                <!-- LEFT: Add new item -->
                 <div class="admin-box">
                     <h3><i class="fa fa-plus-circle"></i> Add New Menu Item</h3>
 
-                    <!-- TODO: add action="/api/menu" method="POST" when database is ready -->
-                    <form class="admin-form" id="add-form" onsubmit="addItem(event)">
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Dish Name</label>
-                                <input type="text" id="f-name" class="form-input" placeholder="e.g. Truffle Burger"
-                                    required />
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Price (€)</label>
-                                <input type="number" id="f-price" class="form-input" placeholder="e.g. 14.50"
-                                    step="0.01" min="0" required />
-                            </div>
+                    <form action="admin.php" method="POST">
+                        <div class="form-group">
+                            <label>Dish Name</label>
+                            <input type="text" name="dish-name" class="form-input" placeholder="e.g. Truffle Burger"
+                                required />
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Description</label>
-                            <textarea id="f-desc" class="form-input form-textarea"
-                                placeholder="Short dish description..." required></textarea>
+                            <label>Price (€)</label>
+                            <input type="number" name="dish-price" class="form-input" step="0.01" min="0" required />
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Ingredients (comma-separated)</label>
-                            <input type="text" id="f-ingredients" class="form-input"
-                                placeholder="e.g. beef, truffle, brioche, lettuce" required />
+                            <label>Ingredients</label>
+                            <input type="text" name="dish-ingredients" class="form-input"
+                                placeholder="beef, truffle, brioche" required />
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Allergens (comma-separated)</label>
-                            <input type="text" id="f-allergens" class="form-input"
-                                placeholder="e.g. gluten, dairy, nuts" />
+                            <label>Allergens</label>
+                            <input type="text" name="dish-allergens" class="form-input" placeholder="gluten, dairy" />
                         </div>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Category</label>
-                                <select id="f-category" class="form-input form-select">
-                                    <option value="starters">Starters</option>
-                                    <option value="mains">Main Dishes</option>
-                                    <option value="desserts">Desserts</option>
-                                    <option value="drinks">Drinks</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Featured on homepage?</label>
-                                <select id="f-featured" class="form-input form-select">
-                                    <option value="false">No</option>
-                                    <option value="true">Yes</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="dish-category" class="form-input">
+                                <option value="starters">Starters</option>
+                                <option value="mains">Main Dishes</option>
+                                <option value="desserts">Desserts</option>
+                                <option value="drinks">Drinks</option>
+                            </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">
+                        <div class="form-group">
+                            <label>Featured on homepage?</label>
+                            <select name="dish-featured" class="form-input">
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" name="add_item" class="btn btn-primary">
                             <i class="fa fa-plus"></i> Add to Menu
                         </button>
-
                     </form>
 
-                    <!-- Confirmation message after adding -->
-                    <p id="add-notice" class="form-success" style="margin-top:0.75rem;"></p>
-
+                    <!-- Success message after adding -->
+                            <?php if (isset($add_notice)) { ?>
+                        <p class="form-success"><?php echo $add_notice; ?></p>
+                            <?php } ?>
                 </div>
 
 
-                <!-- RIGHT BOX: Current menu items list -->
+                <!-- RIGHT: Show all current items -->
                 <div class="admin-box">
                     <h3><i class="fa fa-list"></i> Current Menu Items</h3>
 
-                    <!-- Items rendered here by JavaScript -->
-                    <div id="item-list"></div>
+                            <?php foreach ($menuItems as $item) { ?>
+                        <div class="admin-item">
+                            <div>
+                                <p class="admin-item-name"><?php echo $item['naam']; ?></p>
+                                <p class="admin-item-price">€ <?php echo number_format($item['prijs'], 2); ?></p>
+                                <p class="admin-item-cat"><?php echo $item['category']; ?></p>
+                            </div>
+
+                            <!-- Delete button -->
+                            <form action="admin.php" method="POST">
+                                <input type="hidden" name="item_id" value="<?php echo $item['id']; ?>" />
+                                <button type="submit" name="remove_item" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure?')">
+                                    <i class="fa fa-trash"></i> Remove
+                                </button>
+                            </form>
+                        </div>
+                            <?php } ?>
 
                 </div>
 
-
             </div>
+        </div>
+
         </div>
 
     </main>
 
 
     <!-- ===================== FOOTER ===================== -->
-       <?php
+    <?php
     include_once 'costums/footer.php';
     ?>
     <!-- ===================== JAVASCRIPT ===================== -->
     <script src="javascript\javascript.js"></script>
-    <script>
-
-        /* Guard: only owners can see this page */
-        document.addEventListener('DOMContentLoaded', function () {
-            const user = getUser();
-            if (!user || user.role !== 'owner') {
-                alert('Access denied. Owner login required.');
-                window.location.href = 'login.html';
-            } else {
-                renderItemList();
-            }
-        });
-
-        /* Render the list of current menu items with remove buttons */
-        function renderItemList() {
-            const list = document.getElementById('item-list');
-            list.innerHTML = '';
-
-            menuItems.forEach(function (item) {
-                list.innerHTML += `
-        <div class="admin-item">
-          <div>
-            <p class="admin-item-name">${item.name}</p>
-            <p class="admin-item-price">€ ${item.price.toFixed(2)}</p>
-            <p class="admin-item-cat">${item.category}</p>
-          </div>
-          <button class="btn btn-danger btn-sm" onclick="removeItem(${item.id})">
-            <i class="fa fa-trash"></i> Remove
-          </button>
-        </div>
-      `;
-            });
-        }
-
-        /* Add a new item to the menu */
-        function addItem(event) {
-            event.preventDefault();
-
-            /* Build the new item object — same structure as a database row */
-            const newItem = {
-                id: Date.now(),           /* TODO: use database auto-increment ID */
-                name: document.getElementById('f-name').value.trim(),
-                description: document.getElementById('f-desc').value.trim(),
-                price: parseFloat(document.getElementById('f-price').value),
-                category: document.getElementById('f-category').value,
-                ingredients: document.getElementById('f-ingredients').value
-                    .split(',').map(function (s) { return s.trim(); }),
-                allergens: document.getElementById('f-allergens').value
-                    .split(',').map(function (s) { return s.trim(); }).filter(Boolean),
-                featured: document.getElementById('f-featured').value === 'true',
-                image: 'img/dish-new.jpg'    /* TODO: add image upload later */
-            };
-
-            /* TODO: POST newItem to your database
-               fetch('/api/menu', {
-                 method : 'POST',
-                 headers: { 'Content-Type': 'application/json' },
-                 body   : JSON.stringify(newItem)
-               });
-            */
-
-            /* For now: add to the local array */
-            menuItems.push(newItem);
-
-            /* Show confirmation and reset form */
-            document.getElementById('add-notice').textContent = '✓ "' + newItem.name + '" added to the menu.';
-            document.getElementById('add-form').reset();
-            renderItemList();
-        }
-
-        /* Remove an item from the menu */
-        function removeItem(itemId) {
-            const item = menuItems.find(function (m) { return m.id === itemId; });
-            if (!item) return;
-            if (!confirm('Remove "' + item.name + '" from the menu?')) return;
-
-            /* TODO: DELETE from your database
-               fetch('/api/menu/' + itemId, { method: 'DELETE' });
-            */
-
-            /* For now: remove from local array */
-            const index = menuItems.indexOf(item);
-            menuItems.splice(index, 1);
-            renderItemList();
-        }
-
-        /* Logout */
-        function handleLogout() {
-            logoutUser();
-            window.location.href = 'index.php';
-        }
-
-    </script>
 
 </body>
 

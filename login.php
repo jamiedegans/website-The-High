@@ -1,42 +1,46 @@
 <?php
-session_start();
-include_once 'database.php';
+session_start(); // start session to access it'
+
+include_once 'database.php'; // gives us the $pdo
+include_once 'costums/password.php';
+
 
 if (isset($_POST['submit'])) {
-    $email = $_POST['email']; // get email from input field
-    $password = $_POST['password']; // get the password from input
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-    $password_confirm = $_POST[''];//step 1 tring to find user by
-    $sql = "SELECT * FROM users WHERE email= ?"; // try to find by email using safe ? placeholder
-    $statement = $pdo->prepare($sql);
-    $statement->execute([$email]);
-    $user = $statement->fetchColumn(); // goes for matching if any
+    // Check if email exists in our  file
+    if (isset($credentials[$email]) && password_verify($password, $credentials[$email]['password'])) {
 
-    //step 2 check for user and password match
-    //compares the data with the data in the database
-    if ($user && password_verify($password, $user['password']))
-    //step 3 saves the session
-    {
-        $_SESSION['user_id'] = $user['id']; // remebers who logged in
-        $_SESSION['role'] = $user['role']; //  remebers if admin of staff guest loged in
-        $_SESSION['role'] = $user['email']; // only remmebers thier email
+        // Get role from the file
+        $role = $credentials[$email]['role'];
 
-        // stap 4 sends to the right page
-        if ($user['role'] == 'admin') {
-            header("location admin.php"); // ← sent to page
+        // Also fetch user from DB so we still get the id etc.
+        $sql = "SELECT * FROM users WHERE email = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$email]);
+        $user = $statement->fetch();
+
+        $_SESSION['user_id'] = $user['id'] ?? 0;
+        $_SESSION['role'] = $role;
+        $_SESSION['email'] = $email;
+
+        if ($role == 'admin') {
+            header("location: admin.php");
             exit();
-        } elseif ($user['role'] == 'worker') {
-            header("location: worker.php");     // ← sent to page
+        } elseif ($role == 'worker') {
+            header("location: about.php");
             exit();
         } else {
-            header("location: menu.php"); // ← sent to page
+            header("location: menu.php");
             exit();
         }
+
     } else {
-        // Wrong email or wrong password
         $error = "Invalid email or password.";
     }
 }
+
 ?>
 
 <?php if (isset($error)) { ?>
@@ -81,41 +85,20 @@ if (isset($_POST['submit'])) {
                     </form>
                     <!-- Logo + title -->
                     <div class="auth-header">
-                        <img src="img/logo.png" alt="The High Solan" class="auth-logo-img" />
+                        <img src="images\logo.png" alt="The High Solan" class="auth-logo-img" />
                         <h2>The High Solan</h2>
                         <p class="subtitle">Sign in to your account</p>
                     </div>
+                    <!-- Role selector — employee / owner get different redirects -->
+                    <div class="form-group">
+                        <label class="form-label" for="role">Role</label>
+                        <select id="role" class="form-input form-select">
+                            <option value="customer">Customer</option>
+                            <option value="employee">Employee</option>
+                            <option value="owner">Owner / Admin</option>
+                        </select>
+                    </div>
 
-                    <!-- Login form -->
-                    <!-- TODO: connect form action to your database / backend -->
-                    <form class="auth-form" id="login-form" onsubmit="handleLogin(event)">
-
-                        <div class="form-group">
-                            <label class="form-label" for="email">Email address</label>
-                            <input type="email" id="email" class="form-input" placeholder="you@example.com" required />
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="password">Password</label>
-                            <input type="password" id="password" class="form-input" placeholder="••••••••" required />
-                        </div>
-
-                        <!-- Role selector — employee / owner get different redirects -->
-                        <div class="form-group">
-                            <label class="form-label" for="role">Role</label>
-                            <select id="role" class="form-input form-select">
-                                <option value="customer">Customer</option>
-                                <option value="employee">Employee</option>
-                                <option value="owner">Owner / Admin</option>
-                            </select>
-                        </div>
-
-                        <!-- Error shown here -->
-                        <p class="form-error" id="login-error"></p>
-
-                        <button type="submit" class="btn btn-primary btn-full">
-                            <i class="fa fa-sign-in-alt"></i> Sign In
-                        </button>
 
                     </form>
 
@@ -132,56 +115,6 @@ if (isset($_POST['submit'])) {
 
     <!-- ===================== JAVASCRIPT ===================== -->
     <script src="javascript\javascript.js"></script>
-    <script>
-
-        function handleLogin(event) {
-            event.preventDefault();
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const role = document.getElementById('role').value;
-            const errorEl = document.getElementById('login-error');
-
-            /* -------------------------------------------------------
-               TODO: replace the demo check below with a real API call
-               Example:
-                 const res  = await fetch('/api/login', {
-                   method : 'POST',
-                   headers: { 'Content-Type': 'application/json' },
-                   body   : JSON.stringify({ email, password, role })
-                 });
-                 const data = await res.json();
-                 if (data.success) { ... }
-            ------------------------------------------------------- */
-
-            /* Demo login — remove this block when using a real database */
-            if (password === 'admin') {
-                const user = { name: email.split('@')[0], email: email, role: role };
-                saveUser(user);
-                errorEl.textContent = '';
-
-                /* Redirect based on role */
-                switch (role) {
-                    case 'owner': window.location.href = 'admin.php'; break;
-                    case 'employee': window.location.href = 'menu.php'; break;
-                    default: window.location.href = 'index.php';
-                }
-
-            } else {
-                errorEl.textContent = 'Incorrect credentials. Please try again.';
-            }
-            /* End demo block */
-        }
-
-        /* If already logged in, redirect away from login page */
-        document.addEventListener('DOMContentLoaded', function () {
-            const user = getUser();
-            if (user) {
-                window.location.href = user.role === 'owner' ? 'admin.php' : 'index.php';
-            }
-        });
-
-    </script>
 
 </body>
 

@@ -41,6 +41,6 @@
         <a href="about.php" class="nav-link">About</a>
         <a href="contact.php" class="nav-link">Contact</a>
         <a href="login.php" class="nav-link">Login</a>
-        <a href="cart.php" class="nav-link">Cart</a>
+        <!-- <a href="cart.php" class="nav-link">Cart</a> -->
     </nav>
 </header>
