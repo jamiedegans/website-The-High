@@ -76,20 +76,30 @@ if (isset($_POST['submit'])) {
         <div class="auth-wrapper">
             <div class="auth-card">
                 <div>
-                    <h1>login try 8</h1>
-
-                    <form action="login.php" method="post">
-                        <input type="email" name="email" placeholder="Email" required>
-                        <input type="password" name="password" placeholder="Password" required>
-                        <button type="submit" name="submit">Login</button>
-                    </form>
                     <!-- Logo + title -->
                     <div class="auth-header">
-                        <img src="images\logo.png" alt="The High Solan" class="auth-logo-img" />
+                        <img src="images/logo.png" alt="The High Solan" class="auth-logo-img" />
                         <h2>The High Solan</h2>
                         <p class="subtitle">Sign in to your account</p>
                     </div>
-                    <!-- Role selector — employee / owner get different redirects -->
+
+                    <form class="auth-form" action="login.php" method="post">
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email address</label>
+                            <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com"
+                                required />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="password">Password</label>
+                            <input class="form-input" type="password" id="password" name="password"
+                                placeholder="password" required />
+                        </div>
+                        <button class="btn btn-primary btn-full" type="submit" name="submit">
+                            <i class="fa fa-sign-in-alt"></i> Sign In
+                        </button>
+
+                    </form>
+                    <!-- Role selector — employee / owner get different redirects
                     <div class="form-group">
                         <label class="form-label" for="role">Role</label>
                         <select id="role" class="form-input form-select">
@@ -97,7 +107,7 @@ if (isset($_POST['submit'])) {
                             <option value="employee">Employee</option>
                             <option value="owner">Owner / Admin</option>
                         </select>
-                    </div>
+                    </div> -->
 
 
                     </form>

@@ -15,7 +15,7 @@
       <div class="footer-col">
         <h4>Account</h4>
         <a href="login.php">Login</a>
-        <a href="cart.php">My Cart</a>
+        <!-- <a href="cart.php">My Cart</a> -->
       </div>
       <div class="footer-col">
         <h4>Visit Us</h4>

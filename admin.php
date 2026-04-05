@@ -62,18 +62,16 @@ $menuItems = $statement->fetchAll();
 
 
     <!-- ===================== HEADER ===================== -->
-    <?php
-    include_once 'costums/header.php';
-    ?>
+
     <!-- ===================== MAIN ===================== -->
     <main class="site-main">
 
         <div class="page-header">
             <h2>Admin Panel</h2>
             <p>Manage the menu — connect to database when ready</p>
-        </div>
+        </div> 
         <div class="inner" style="padding-bottom:4rem;">
-            <div class="admin-layout">
+            <div class="admin-layout"><a class="btn btn-outline" href="logout.php">logout</a>
 
                 <!-- LEFT: Add new item -->
                 <div class="admin-box">

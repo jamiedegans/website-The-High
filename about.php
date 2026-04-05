@@ -71,7 +71,7 @@
                     <img src="images/view2.png" alt="Interior view 2" />
                 </div>
                 <div class="photo-card">
-                    <img src="img/interior-4.jpg" alt="Interior view 3" />
+                    <img src="images/view3.png" alt="Interior view 3" />
                 </div>
             </div>
 

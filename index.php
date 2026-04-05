@@ -50,7 +50,7 @@ include_once 'database.php';
           <p class="hero-slogan">"The High because this always the hype"</p>
           <div class="hero-buttons">
             <a href="menu.php" class="btn btn-primary">View Menu</a>
-            <a href="cart.php" class="btn btn-outline">Order Now</a>
+            <a href="about.php" class="btn btn-outline">Learn More</a>
           </div>
         </div>
 
