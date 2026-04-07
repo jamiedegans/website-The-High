@@ -1,5 +1,5 @@
 -- ============================================
--- Studenten database - 100 voorbeeldstudenten
+-- menu voorbeeldstudenten
 -- ============================================
 
 CREATE DATABASE IF NOT EXISTS mydatabase;

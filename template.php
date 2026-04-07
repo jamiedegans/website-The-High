@@ -1,3 +1,23 @@
+<?php
+session_start();
+include_once "database.php";
+
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("location: login.php");
+    exit();
+}
+
+// ADD THIS BELOW to fetch the item data for pre-filling the form
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$stmt = $pdo->prepare("SELECT * FROM menu WHERE id = ? LIMIT 1");
+$stmt->execute([$id]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$row) {
+    echo "Item not found.";
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,36 +49,83 @@
     <?php
     include_once 'costums/header.php';
     ?>
-    <!-- end HEADER -->
-
-
-    <!-- ============================================================
-     MAIN CONTENT — replace this block on each page
-============================================================ -->
     <main class="site-main">
 
-        <!-- YOUR PAGE CONTENT GOES HERE -->
+        <div class="admin-box">
+            <h3><i class="fa fa-edit"></i> Edit Menu Item</h3>
 
+            <form action="update.php" method="POST">
+
+                
+                <input type="hidden" name="item_id" value="<?php echo $row['id']; ?>" />
+
+                <div class="form-group">
+                    <label>Dish Name</label>
+                    
+                    <input type="text" name="dish-name" class="form-input"
+                        value="<?php echo htmlspecialchars($row['naam']); ?>" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Price (€)</label>
+                    <input type="number" name="dish-price" class="form-input" step="0.01" min="0"
+                        value="<?php echo $row['prijs']; ?>" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Ingredients</label>
+                    <input type="text" name="dish-ingredients" class="form-input"
+                        value="<?php echo htmlspecialchars($row['ingredients']); ?>" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Allergens</label>
+                    <input type="text" name="dish-allergens" class="form-input"
+                        value="<?php echo htmlspecialchars($row['allergens']); ?>" />
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="dish-category" class="form-input">
+                        <option value="starters" <?php echo $row['category'] === 'starters' ? 'selected' : ''; ?>>Starters
+                        </option>
+                        <option value="mains" <?php echo $row['category'] === 'mains' ? 'selected' : ''; ?>>Main Dishes
+                        </option>
+                        <option value="desserts" <?php echo $row['category'] === 'desserts' ? 'selected' : ''; ?>>Desserts
+                        </option>
+                        <option value="drinks" <?php echo $row['category'] === 'drinks' ? 'selected' : ''; ?>>Drinks
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Featured on homepage?</label>
+                    <select name="dish-featured" class="form-input">
+                        <option value="0" <?php echo $row['featured'] == 0 ? 'selected' : ''; ?>>No</option>
+                        <option value="1" <?php echo $row['featured'] == 1 ? 'selected' : ''; ?>>Yes</option>
+                    </select>
+                </div>
+
+                <button type="submit" name="edit_item" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Save Changes
+                </button>
+
+            </form>
+        </div>
     </main>
 
 
     <!-- ============================================================
      FOOTER — copy this to every page
 ============================================================ -->
-  <footer>
-  </footer>
+    <footer>
+    </footer>
 
-    <!-- end FOOTER -->
 
 
     <!-- Shared JavaScript -->
-    <script src="javascript\javascript.js"></script>
-
-    <!-- Page-specific JavaScript goes below script.js -->
-    <script>
-     
-    </script>
-
+    <script type="module" src="javascript/javascript.js"></script>
+    <script type="module" src="javascript/defer.js"></script>
 </body>
 
 </html>

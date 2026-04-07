@@ -10,6 +10,14 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 <?php
 include_once 'database.php';
 
+// Handle REMOVE item
+if (isset($_POST['remove_item'])) {
+    $sql = "DELETE FROM menu WHERE id = ?";
+    $statement = $pdo->prepare($sql);
+    $statement->execute([$_POST['item_id']]);
+    echo '✓ Item removed from the menu.';
+}
+
 // Handle ADD item
 if (isset($_POST['add_item'])) {
     $sql = "INSERT INTO menu (naam, prijs, category, ingredients, allergens, featured, image_url) 
@@ -25,14 +33,6 @@ if (isset($_POST['add_item'])) {
         ''  // empty image no image currently, can be updated later
     ]);
     $add_notice = '✓ "' . $_POST['dish-name'] . '" added to the menu.';
-}
-
-// Handle REMOVE item
-if (isset($_POST['remove_item'])) {
-    $sql = "DELETE FROM menu WHERE id = ?";
-    $statement = $pdo->prepare($sql);
-    $statement->execute([$_POST['item_id']]);
-    echo '✓ Item removed from the menu.';
 }
 
 // Fetch all menu items
@@ -69,7 +69,7 @@ $menuItems = $statement->fetchAll();
         <div class="page-header">
             <h2>Admin Panel</h2>
             <p>Manage the menu — connect to database when ready</p>
-        </div> 
+        </div>
         <div class="inner" style="padding-bottom:4rem;">
             <div class="admin-layout"><a class="btn btn-outline" href="logout.php">logout</a>
 
@@ -78,6 +78,7 @@ $menuItems = $statement->fetchAll();
                     <h3><i class="fa fa-plus-circle"></i> Add New Menu Item</h3>
 
                     <form action="admin.php" method="POST">
+
                         <div class="form-group">
                             <label>Dish Name</label>
                             <input type="text" name="dish-name" class="form-input" placeholder="e.g. Truffle Burger"
@@ -124,9 +125,9 @@ $menuItems = $statement->fetchAll();
                     </form>
 
                     <!-- Success message after adding -->
-                            <?php if (isset($add_notice)) { ?>
+                    <?php if (isset($add_notice)) { ?>
                         <p class="form-success"><?php echo $add_notice; ?></p>
-                            <?php } ?>
+                    <?php } ?>
                 </div>
 
 
@@ -134,13 +135,18 @@ $menuItems = $statement->fetchAll();
                 <div class="admin-box">
                     <h3><i class="fa fa-list"></i> Current Menu Items</h3>
 
-                            <?php foreach ($menuItems as $item) { ?>
+                    <?php foreach ($menuItems as $item) { ?>
                         <div class="admin-item">
                             <div>
                                 <p class="admin-item-name"><?php echo $item['naam']; ?></p>
                                 <p class="admin-item-price">€ <?php echo number_format($item['prijs'], 2); ?></p>
                                 <p class="admin-item-cat"><?php echo $item['category']; ?></p>
                             </div>
+
+                            <a href="template.php?id=<?php echo $item['id']; ?>" class="btn btn-secondary btn-sm">
+                                <i class="fa fa-edit"></i> Edit
+                            </a>
+
 
                             <!-- Delete button -->
                             <form action="admin.php" method="POST">
@@ -151,7 +157,7 @@ $menuItems = $statement->fetchAll();
                                 </button>
                             </form>
                         </div>
-                            <?php } ?>
+                    <?php } ?>
 
                 </div>
 
@@ -164,9 +170,6 @@ $menuItems = $statement->fetchAll();
 
 
     <!-- ===================== FOOTER ===================== -->
-    <?php
-    include_once 'costums/footer.php';
-    ?>
     <!-- ===================== JAVASCRIPT ===================== -->
     <script src="javascript\javascript.js"></script>
 

@@ -91,10 +91,8 @@ $menuItems = $statement->fetchAll();
                             <p class="card-price">€
                                 <?php echo number_format($menuItem['prijs'], 2); ?>
                             </p>
-
-                            <!-- Toggle button — shows ingredients & allergens -->
-                            <button class="btn-allergen" onclick="toggleAllergens(<?php echo $menuItem['id']; ?>)">
-                                <i class="fa fa-info-circle"></i> Ingredients & Allergens
+                            <button class="btn-allergen" onclick="toggleAllergen(<?php echo $menuItem['id']; ?>)"></button>
+                            <i class="fa fa-info-circle"></i> Ingredients & Allergens
                             </button>
 
                             <!-- Allergen panel — hidden by default, opens on click -->
@@ -104,7 +102,16 @@ $menuItems = $statement->fetchAll();
                                 </p>
                                 <p><strong>Allergens:</strong></p>
                                 <div class="allergen-tags">
-                                    <?php echo $menuItem['allergens']; ?>
+                                    <?php
+                                    $allergens = array_filter(array_map('trim', explode(',', $menuItem['allergens'])));
+                                    if (count($allergens) === 0) {
+                                        echo '<span class="allergen-tag">None</span>';
+                                    } else {
+                                        foreach ($allergens as $allergen) {
+                                            echo '<span class="allergen-tag">' . htmlspecialchars($allergen) . '</span>';
+                                        }
+                                    }
+                                    ?>
                                 </div>
                             </div>
 
@@ -125,7 +132,14 @@ $menuItems = $statement->fetchAll();
     include_once 'costums/footer.php';
     ?>
     <!-- ===================== JAVASCRIPT ===================== -->
-    <script src="javascript/menu.js"></script>
+    <script>
+        function toggleAllergen(id) {
+            const panel = document.getElementById('allergen-' + id);
+            if (!panel) { console.log('Panel not found for id:', id); return; }
+            panel.classList.toggle('open');
+            console.log('Classes now:', panel.className); // Should show "allergen-panel open"
+        }
+    </script>
 
 </body>
 

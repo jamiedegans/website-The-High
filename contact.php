@@ -114,24 +114,6 @@
     ?>
     <!-- ===================== JAVASCRIPT ===================== -->
     <script src="javascript\javascript.js"></script>
-    <script>
-
-        function handleContact(event) {
-            event.preventDefault();
-
-            /* TODO: POST form data to your database
-               const formData = new FormData(event.target);
-               fetch('/api/contact', { method: 'POST', body: formData });
-            */
-
-            document.getElementById('contact-notice').textContent =
-                '✓ Message sent! We will get back to you soon.';
-
-            event.target.reset();
-        }
-
-    </script>
-
 </body>
 
 </html>
