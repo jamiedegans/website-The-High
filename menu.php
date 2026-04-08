@@ -52,8 +52,7 @@ $menuItems = $statement->fetchAll();
             <h2>Our Menu</h2>
             <p>Fresh ingredients, bold flavours</p>
 
-
-            <!-- Search result count -->
+          
             <p id="search-notice" style="margin-top:0.75rem; font-size:0.85rem; color:#7C7C7C;"></p>
         </div>
 

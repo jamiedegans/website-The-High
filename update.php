@@ -6,6 +6,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("location: login.php");
     exit();
 }
+
 // The ? marks are placeholders to keep the query safe from SQL injection
 if (isset($_POST['edit_item'])) {
     $sql = "UPDATE menu SET naam=?, prijs=?, category=?, ingredients=?, allergens=?, featured=? WHERE id=?";
