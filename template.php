@@ -2,7 +2,6 @@
 session_start();
 include_once "database.php";
 
-
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("location: login.php");
     exit();
@@ -120,9 +119,6 @@ if (!$row) {
 ============================================================ -->
     <footer>
     </footer>
-
-
-
     <!-- Shared JavaScript -->
     <script type="module" src="javascript/javascript.js"></script>
     <script type="module" src="javascript/defer.js"></script>

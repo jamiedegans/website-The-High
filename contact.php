@@ -1,3 +1,20 @@
+<?php
+include_once 'database.php';
+
+// i want the from to sent the from it data to a database that saves from the from and  insert into the databse
+
+//i want that page to have insert into collom for email and name and it category
+
+// i want a form that works with the database and that i can insert data into the database and that it shows on add notice
+
+
+?>
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
