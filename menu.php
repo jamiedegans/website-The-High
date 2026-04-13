@@ -8,7 +8,7 @@ if ($zoekopdracht == '') {
     $statement = $pdo->prepare($sql);
     $statement->execute();
 } else {
-    $sql = "SELECT * FROM menu WHERE naam LIKE ? OR ingredients LIKE ? OR allergens LIKE ?";
+    $sql = "SELECT * FROM menu WHERE naam   LIKE ? OR ingredients LIKE ? OR allergens LIKE ?";
     $statement = $pdo->prepare($sql);
     $statement->execute([
         '%' . $zoekopdracht . '%',
@@ -113,10 +113,7 @@ $menuItems = $statement->fetchAll();
                                     ?>
                                 </div>
                             </div>
-
-
                         </div>
-
                     </div>
                     <?php
                 }

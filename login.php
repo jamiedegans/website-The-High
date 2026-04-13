@@ -16,10 +16,10 @@ if (isset($_POST['submit'])) {
         $role = $credentials[$email]['role'];
 
         // Also fetch user from DB so we still get the id etc.
-        $sql = "SELECT * FROM users WHERE email = ?";
-        $statement = $pdo->prepare($sql);
-        $statement->execute([$email]);
-        $user = $statement->fetch();
+        // $sql = "SELECT * FROM users WHERE email = ?";
+        // $statement = $pdo->prepare($sql);
+        // $statement->execute([$email]);
+        // $user = $statement->fetch();
 
         $_SESSION['user_id'] = $user['id'] ?? 0;
         $_SESSION['role'] = $role;

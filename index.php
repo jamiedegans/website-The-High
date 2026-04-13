@@ -26,6 +26,8 @@ include_once 'database.php';
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="css/style.css" />
+   <script src="javascript\defer.js" defer></script>
+
 </head>
 
 <body>
@@ -49,8 +51,9 @@ include_once 'database.php';
           <h1 class="hero-title">The High Solan</h1>
           <p class="hero-slogan">"The High because this always the hype"</p>
           <div class="hero-buttons">
-            <a href="menu.php" class="btn btn-primary">View Menu</a>
-            <a href="about.php" class="btn btn-outline">Learn More</a>
+            <script type="module" src="javascript/javascript.js"></script>
+            <custom-button label="Go to About" href="about.php" variant="about">sent to about</custom-button>
+            <custom-button label="View Menu" href="menu.php" variant="outline">View Menu</custom-button>
           </div>
         </div>
 
@@ -113,26 +116,8 @@ include_once 'database.php';
   include_once 'costums/footer.php';
   ?>
   <!-- ===================== JAVASCRIPT ===================== -->
-  <script src="javascript/javascript.js">
-  </script>
-  <script src="javascript/defer.js"></script>
-  <script>
+ 
 
-    /* Render the 3 featured dishes on the homepage */
-    function renderFeatured() {
-      const featured = menuItems.filter(function (item) { return item.featured; });
-      const grid = document.getElementById('featured-grid');
-      grid.innerHTML = '';
-
-      featured.slice(0, 3).forEach(function (item) {
-        grid.innerHTML += buildMenuCard(item);
-      });
-    }
-
-    /* Run when page loads */
-    renderFeatured();
-
-  </script>
 
 </body>
 

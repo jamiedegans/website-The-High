@@ -9,7 +9,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 // ADD THIS BELOW to fetch the item data for pre-filling the form
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$stmt = $pdo->prepare("SELECT * FROM menu WHERE id = ? LIMIT 1");
+$stmt = $pdo->prepare("SELECT * FROM menu 
+WHERE id = ? LIMIT 1");
 $stmt->execute([$id]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$row) {
@@ -80,7 +81,7 @@ if (!$row) {
                 <div class="form-group">
                     <label>Allergens</label>
                     <input type="text" name="dish-allergens" class="form-input"
-                        value="<?php echo htmlspecialchars($row['allergens']); ?>" />
+                   
                 </div>
 
                 <div class="form-group">
@@ -120,8 +121,6 @@ if (!$row) {
     <footer>
     </footer>
     <!-- Shared JavaScript -->
-    <script type="module" src="javascript/javascript.js"></script>
-    <script type="module" src="javascript/defer.js"></script>
-</body>
+   </body>
 
 </html>

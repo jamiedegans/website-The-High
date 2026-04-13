@@ -1,7 +1,7 @@
 
 
 // FIX 1: PascalCase class name
-class CustomButton extends HTMLElement {
+class m extends HTMLElement {
 
     static get observedAttributes() {
         return ["label", "href", "variant", "target"];
