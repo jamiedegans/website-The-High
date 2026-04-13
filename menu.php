@@ -19,9 +19,6 @@ if ($zoekopdracht == '') {
 $menuItems = $statement->fetchAll();
 ?>
 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,6 +33,7 @@ $menuItems = $statement->fetchAll();
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
+    <script src="javascript\menu.js" defer></script>
 </head>
 
 <body>
@@ -52,16 +50,17 @@ $menuItems = $statement->fetchAll();
             <h2>Our Menu</h2>
             <p>Fresh ingredients, bold flavours</p>
 
-          
+
             <p id="search-notice" style="margin-top:0.75rem; font-size:0.85rem; color:#7C7C7C;"></p>
         </div>
+
+        <menu-card dish-name="Pizza" dish-price="12.99" dish-description="A delicious pizza with fresh ingredients." dish-ingredients="Tomato sauce, mozzarella, pepperoni" dish-allergens="Gluten, Dairy" dish-category="Main Course" dish-img="images/dishes/placeholder.png"></menu-card>
 
 
         <!-- Menu grid — 3 cards per row, wraps on smaller screens -->
         <div class="inner" style="padding-bottom:4rem;">
             <div class="card-row" id="menu-grid" style="flex-wrap:wrap;">
                 <?php
-
                 foreach ($menuItems as $menuItem) {
                     $image_url = $menuItem['image_url'];
                     if ($image_url == "" || $image_url === null) {

@@ -1,60 +1,51 @@
 
 
-// FIX 1: PascalCase class name
-class m extends HTMLElement {
+class MenuCard extends HTMLElement {
+  connectedCallback() {
 
-    static get observedAttributes() {
-        return ["label", "href", "variant", "target"];
-    }
+const name = this.getAttribute("dish-name");
+const price = this.getAttribute("dish-price");
+const description = this.getAttribute("dish-description");
+const ingredients = this.getAttribute("dish-ingredients");
+const allergens = this.getAttribute("dish-allergens");
+const category = this.getAttribute("dish-category") || "General"
+const img = this.getAttribute("dish-img") || "images/dishes/placeholder.png";
+// created the variables to get the attributes from the html file.
 
-    constructor() {
-        super();
-        this.attachShadow({ mode: "open" });
-    }
+//create the data tranfromers in a js for each loop
+    const allergenList = allergens
+  ? allergens.split(",").map(a => a.trim())
+  : [];
 
-    connectedCallback() {
-        this._build();
-    }
 
-    // FIX 2: Accept the (name, oldValue, newValue) parameters
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (this._link) this._update();
-    }
+    this.innerHTML = `
+  <div class="menu-card">
+    <div class="card-img-wrap">
+      <img src="${img}" alt="${name}" />
+      <span>${category}</span>
+    </div>
 
-    _build() {
-        const style = document.createElement("style");
-       // style.textContent = css;
+    <div class="card-body">
+      <h3>${name}</h3>
+      <p>${ingredients}</p>
+      <p>€${price}</p>
 
-        this._link = document.createElement("a");
-        this._link.className = "button";
+      <button class="btn-allergen">Info</button>
 
-        this._label = document.createElement("span");
-        this._label.className = "label";
-
-        this._slot = document.createElement("slot");
-
-        this._link.appendChild(this._label);
-        this._link.appendChild(this._slot);
-
-        this.shadowRoot.appendChild(style);
-        this.shadowRoot.appendChild(this._link);
-
-        this._update();
-    }
-
-    _update() {
-        const label = this.getAttribute("label");
-        if (label) {
-            this._label.textContent = label;
-            this._slot.style.display = "none";
-        } else {
-            this._label.textContent = "";
-            this._slot.style.display = "inline";
+      <div class="allergen-panel">
+        ${
+          allergenList.length === 0
+            ? "None"
+            : allergenList.map(a => `<span>${a}</span>`).join("")
         }
+      </div>
+    </div>
+  </div>
+`;
 
-        this._link.href   = this.getAttribute("href")   || "#";
-        this._link.target = this.getAttribute("target") || "_self";
-    }
+  }
 }
-customElements.define("custom-button", CustomButton);
 
+customElements.define("menu-card", MenuCard);
+
+// created the name of the class and the custom element to be used in the html file.
