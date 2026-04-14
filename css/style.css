@@ -524,9 +524,15 @@ p {
 /* ----------------------------------------------------------
    MENU CARD
 ---------------------------------------------------------- */
-.menu-card {
+menu-card {
     flex: 1 1 300px;
     max-width: 380px;
+    display: block;
+}
+
+.menu-card {
+    width: 100%;
+    height: 100%;          /* ← add this */
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -534,6 +540,7 @@ p {
     display: flex;
     flex-direction: column;
     transition: var(--transition);
+    /* ← remove: flex: 1 1 300px; and max-width: 380px; */
 }
 
 .menu-card:hover {

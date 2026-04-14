@@ -52,8 +52,11 @@ include_once 'database.php';
           <p class="hero-slogan">"The High because this always the hype"</p>
           <div class="hero-buttons">
             <script type="module" src="javascript/javascript.js"></script>
-            <custom-button label="Go to About" href="about.php" variant="about">sent to about</custom-button>
-            <custom-button label="View Menu" href="menu.php" variant="outline">View Menu</custom-button>
+            <a href="about.php" class="btn btn-primary">Go to About</a>
+
+            <a href="menu.php" class="btn btn-outline">View Menu</a>
+            <!-- <custom-button label="Go to About" href="about.php" variant="about">sent to about</custom-button>
+            <custom-button label="View Menu" href="menu.php" variant="outline">View Menu</custom-button> -->
           </div>
         </div>
 

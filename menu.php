@@ -8,7 +8,7 @@ if ($zoekopdracht == '') {
     $statement = $pdo->prepare($sql);
     $statement->execute();
 } else {
-    $sql = "SELECT * FROM menu WHERE naam   LIKE ? OR ingredients LIKE ? OR allergens LIKE ?";
+    $sql = "SELECT * FROM menu WHERE naam LIKE ? OR ingredients LIKE ? OR allergens LIKE ?";
     $statement = $pdo->prepare($sql);
     $statement->execute([
         '%' . $zoekopdracht . '%',
@@ -54,7 +54,6 @@ $menuItems = $statement->fetchAll();
             <p id="search-notice" style="margin-top:0.75rem; font-size:0.85rem; color:#7C7C7C;"></p>
         </div>
 
-        <menu-card dish-name="Pizza" dish-price="12.99" dish-description="A delicious pizza with fresh ingredients." dish-ingredients="Tomato sauce, mozzarella, pepperoni" dish-allergens="Gluten, Dairy" dish-category="Main Course" dish-img="images/dishes/placeholder.png"></menu-card>
 
 
         <!-- Menu grid — 3 cards per row, wraps on smaller screens -->
@@ -69,51 +68,14 @@ $menuItems = $statement->fetchAll();
                         $image_url = "images/dishes/" . $image_url . ".png";
                     }
                     ?>
-
-
-                    <div class="menu-card">
-                        <div class="card-img-wrap">
-                            <img src="<?php echo $image_url; ?>" alt="<?php echo $menuItem['naam']; ?>" />
-                            <span class="card-badge">
-                                <?php echo $menuItem['category']; ?>
-                            </span>
-                        </div>
-
-                        <div class="card-body">
-                            <h3 class="card-title">
-                                <?php echo $menuItem['naam']; ?>
-                            </h3>
-                            <p class="card-desc">
-                                <?php echo $menuItem['ingredients']; ?>
-                            </p>
-                            <p class="card-price">€
-                                <?php echo number_format($menuItem['prijs'], 2); ?>
-                            </p>
-                            <button class="btn-allergen" onclick="toggleAllergen(<?php echo $menuItem['id']; ?>)"></button>
-                            <i class="fa fa-info-circle"></i> Ingredients & Allergens
-                            </button>
-
-                            <!-- Allergen panel — hidden by default, opens on click -->
-                            <div class="allergen-panel" id="allergen-<?php echo $menuItem['id']; ?>">
-                                <p><strong>Ingredients:</strong>
-                                    <?php echo $menuItem['ingredients']; ?>
-                                </p>
-                                <p><strong>Allergens:</strong></p>
-                                <div class="allergen-tags">
-                                    <?php
-                                    $allergens = array_filter(array_map('trim', explode(',', $menuItem['allergens'])));
-                                    if (count($allergens) === 0) {
-                                        echo '<span class="allergen-tag">None</span>';
-                                    } else {
-                                        foreach ($allergens as $allergen) {
-                                            echo '<span class="allergen-tag">' . htmlspecialchars($allergen) . '</span>';
-                                        }
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <menu-card
+                        dish-name="<?php echo $menuItem['naam']; ?>"
+                        dish-price="<?php echo number_format($menuItem['prijs'], 2); ?>"
+                        dish-description="<?php echo $menuItem['ingredients']; ?>"
+                        dish-ingredients="<?php echo $menuItem['ingredients']; ?>"
+                        dish-allergens="<?php echo $menuItem['allergens']; ?>"
+                        dish-category="<?php echo $menuItem['category']; ?>"
+                        dish-img="<?php echo $image_url; ?>"></menu-card>
                     <?php
                 }
                 ?>
